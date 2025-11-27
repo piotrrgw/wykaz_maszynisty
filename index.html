@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kalkulator czasu jazdy</title>
+
+  <style>
+    :root {
+      --blue: #002664;
+      --orange: #ff6319;
+      --lightblue: #0097dc;
+      --gray: #c5c7c8;
+    }
+
+    body {
+      font-family: "Segoe UI", Arial, sans-serif;
+      background-color: #f8f9fa;
+      color: var(--blue);
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    h1 {
+      text-align: center;
+      background-color: var(--blue);
+      color: white;
+      padding: 1rem;
+      margin: 0;
+      font-weight: 600;
+    }
+
+    .container {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem;
+    }
+
+    .calculator {
+      background-color: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      padding: 2rem;
+      max-width: 500px;
+      width: 100%;
+    }
+
+    .row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+
+    label {
+      flex: 1;
+      font-weight: 600;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid var(--gray);
+      border-radius: 0.5rem;
+      font-size: 1rem;
+    }
+
+    input[readonly] {
+      background-color: #f0f0f0;
+      color: #555;
+      font-weight: bold;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      color: white;
+      cursor: pointer;
+      transition: background-color 0.2s;
+      font-weight: 600;
+      margin-top: .5rem;
+    }
+
+    #btn-oblicz {
+      background-color: var(--orange);
+    }
+    #btn-oblicz:hover {
+      background-color: #e5550f;
+    }
+
+    #btn-clear {
+      background-color: var(--gray);
+      color: var(--blue);
+    }
+    #btn-clear:hover {
+      background-color: #b1b3b4;
+    }
+
+    .error {
+      color: red;
+      font-size: 0.9rem;
+      text-align: center;
+      min-height: 1rem;
+      margin-top: .5rem;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background-color: var(--lightblue);
+      color: white;
+      font-size: 0.9rem;
+    }
+
+    footer a {
+      color: white;
+      text-decoration: underline;
+      font-weight: bold;
+    }
+
+    @media (max-width: 600px) {
+      .row {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      label {
+        margin-bottom: 0.25rem;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <h1>Kalkulator czasu jazdy</h1>
+
+  <div class="container">
+    <div class="calculator">
+      <div class="row">
+        <label for="start">Od godz./min.:</label>
+        <input type="time" id="start" />
+      </div>
+
+      <div class="row">
+        <label for="end">Do godz./min.:</label>
+        <input type="time" id="end" />
+      </div>
+
+      <div class="row">
+        <label for="postoj">Czas postoju (minuty):</label>
+        <input type="number" id="postoj" min="0" placeholder="np. 15" />
+      </div>
+
+      <div class="row">
+        <label for="jazda">Czas jazdy (minuty):</label>
+        <input type="text" id="jazda" readonly />
+      </div>
+
+      <button id="btn-oblicz" onclick="oblicz()">Oblicz</button>
+      <button id="btn-clear" onclick="wyczysc()">Wyczyść dane</button>
+
+      <div class="error" id="error"></div>
+    </div>
+  </div>
+
+  <footer>
+    © 2025 | Projekt wykonany przez
+    <a href="https://twojlink.pl" target="_blank">Navi</a>
+  </footer>
+
+  <script>
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("start").value = localStorage.getItem("start") || "";
+      document.getElementById("end").value = localStorage.getItem("end") || "";
+      document.getElementById("postoj").value = localStorage.getItem("postoj") || "";
+      document.getElementById("jazda").value = localStorage.getItem("jazda") || "";
+    });
+
+    function zapiszDane() {
+      localStorage.setItem("start", document.getElementById("start").value);
+      localStorage.setItem("end", document.getElementById("end").value);
+      localStorage.setItem("postoj", document.getElementById("postoj").value);
+      localStorage.setItem("jazda", document.getElementById("jazda").value);
+    }
+
+    function wyczysc() {
+      document.getElementById("start").value = "";
+      document.getElementById("end").value = "";
+      document.getElementById("postoj").value = "";
+      document.getElementById("jazda").value = "";
+      document.getElementById("error").textContent = "";
+
+      localStorage.clear();
+    }
+
+    function oblicz() {
+      const start = document.getElementById("start").value;
+      const end = document.getElementById("end").value;
+      const postoj = document.getElementById("postoj").value;
+      const errorDiv = document.getElementById("error");
+      const jazdaInput = document.getElementById("jazda");
+
+      errorDiv.textContent = "";
+      jazdaInput.value = "";
+
+      if (!start || !end || postoj === "") {
+        errorDiv.textContent = "Uzupełnij wszystkie pola.";
+        return;
+      }
+
+      const [sh, sm] = start.split(":").map(Number);
+      const [eh, em] = end.split(":").map(Number);
+
+      if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em) ||
+          sh > 23 || sm > 59 || eh > 23 || em > 59) {
+        errorDiv.textContent = "Nieprawidłowy format godziny.";
+        return;
+      }
+
+      let startMinutes = sh * 60 + sm;
+      let endMinutes = eh * 60 + em;
+
+      if (endMinutes < startMinutes) {
+        endMinutes += 24 * 60;
+      }
+
+      const total = endMinutes - startMinutes;
+      const postojMinutes = parseInt(postoj, 10);
+
+      if (isNaN(postojMinutes) || postojMinutes < 0) {
+        errorDiv.textContent = "Nieprawidłowa wartość czasu postoju.";
+        return;
+      }
+
+      const jazda = total - postojMinutes;
+
+      if (jazda < 0) {
+        errorDiv.textContent = "Czas postoju przekracza całkowity czas przejazdu.";
+        return;
+      }
+
+      jazdaInput.value = jazda + " min";
+      zapiszDane();
+    }
+  </script>
+
+</body>
+</html>
+
