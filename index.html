@@ -1,266 +1,732 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Kalkulator czasu jazdy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kalkulator Czasu Pracy Maszynisty</title>
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-W05T4L1HFD');
+    </script>
+    <style>
+        /* CSS VARIABLES */
+        :root {
+            --base-font-size: 16px; 
+            
+            /* Motyw JASNY */
+            --primary-color: #1a252f;
+            --accent-color: #0056b3;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #111111;
+            --text-secondary: #444444;
+            --input-bg: #ffffff;
+            --input-border: #767676;
+            --result-bg: #e3f2fd;
+            --result-border: #90caf9;
+            --result-text: #0d47a1;
+            --btn-gray-bg: #eee;
+            --btn-gray-text: #333;
+            --danger-color: #d32f2f;
+            --focus-ring: 3px solid #ffbf47;
+            --shadow-color: rgba(0,0,0,0.1);
+        }
 
-  <style>
-    :root {
-      --blue: #002664;
-      --orange: #ff6319;
-      --lightblue: #0097dc;
-      --gray: #c5c7c8;
-    }
+        /* Motyw CIEMNY */
+        body.dark-mode {
+            --primary-color: #ecf0f1;
+            --accent-color: #64b5f6;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-color: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --input-bg: #2c2c2c;
+            --input-border: #888;
+            --result-bg: #0d47a1;
+            --result-border: #1565c0;
+            --result-text: #ffffff;
+            --btn-gray-bg: #333;
+            --btn-gray-text: #ddd;
+            --danger-color: #ff5252;
+            --shadow-color: rgba(0,0,0,0.5);
+        }
 
-    body {
-      font-family: "Segoe UI", Arial, sans-serif;
-      background-color: #f8f9fa;
-      color: var(--blue);
-      margin: 0;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-    }
+        /* SKALOWANIE BAZOWE */
+        html {
+            font-size: var(--base-font-size);
+        }
 
-    h1 {
-      text-align: center;
-      background-color: var(--blue);
-      color: white;
-      padding: 1rem;
-      margin: 0;
-      font-weight: 600;
-    }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            line-height: 1.5;
+            transition: background-color 0.3s, color 0.3s;
+        }
 
-    .container {
-      flex: 1;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 2rem;
-    }
+        /* HEADER */
+        header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 1rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
 
-    .calculator {
-      background-color: white;
-      border-radius: 1rem;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      padding: 2rem;
-      max-width: 500px;
-      width: 100%;
-    }
+        h1 {
+            margin: 0;
+            font-size: 1.3rem;
+            flex-grow: 1;
+        }
 
-    .row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 1rem;
-    }
+        .tools-container {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
 
-    label {
-      flex: 1;
-      font-weight: 600;
-    }
+        .tool-btn {
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            width: 2.5rem; /* Skalowanie względem czcionki */
+            height: 2.5rem;
+            border-radius: 50%;
+            font-size: 1rem;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.2s;
+        }
 
-    input {
-      flex: 1;
-      padding: 0.5rem;
-      border: 1px solid var(--gray);
-      border-radius: 0.5rem;
-      font-size: 1rem;
-    }
+        .tool-btn:hover {
+            background: rgba(255,255,255,0.3);
+        }
 
-    input[readonly] {
-      background-color: #f0f0f0;
-      color: #555;
-      font-weight: bold;
-    }
+        .tool-btn:focus {
+            outline: var(--focus-ring);
+            outline-offset: 2px;
+        }
 
-    button {
-      width: 100%;
-      padding: 0.75rem;
-      border: none;
-      border-radius: 0.5rem;
-      font-size: 1rem;
-      color: white;
-      cursor: pointer;
-      transition: background-color 0.2s;
-      font-weight: 600;
-      margin-top: .5rem;
-    }
+        /* MAIN */
+        main {
+            flex: 1;
+            padding: 1.25rem;
+            max-width: 650px;
+            margin: 0 auto;
+            width: 100%;
+            box-sizing: border-box;
+        }
 
-    #btn-oblicz {
-      background-color: var(--orange);
-    }
-    #btn-oblicz:hover {
-      background-color: #e5550f;
-    }
+        .card {
+            background: var(--card-bg);
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 10px var(--shadow-color);
+            margin-bottom: 1.5rem;
+            transition: background-color 0.3s;
+        }
 
-    #btn-clear {
-      background-color: var(--gray);
-      color: var(--blue);
-    }
-    #btn-clear:hover {
-      background-color: #b1b3b4;
-    }
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
 
-    .error {
-      color: red;
-      font-size: 0.9rem;
-      text-align: center;
-      min-height: 1rem;
-      margin-top: .5rem;
-    }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+            color: var(--text-color);
+            font-size: 1.1rem;
+        }
 
-    footer {
-      text-align: center;
-      padding: 1rem;
-      background-color: var(--lightblue);
-      color: white;
-      font-size: 0.9rem;
-    }
+        .input-group {
+            display: flex;
+            gap: 10px;
+        }
 
-    footer a {
-      color: white;
-      text-decoration: underline;
-      font-weight: bold;
-    }
+        input[type="time"], input[type="number"] {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1.1rem; /* Skaluje się z root */
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            color-scheme: light dark;
+        }
 
-    @media (max-width: 600px) {
-      .row {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-      label {
-        margin-bottom: 0.25rem;
-      }
-    }
-  </style>
+        input:focus {
+            outline: var(--focus-ring);
+            border-color: var(--accent-color);
+        }
+
+        /* PRZYCISK TERAZ - POPRAWKA SKALOWANIA */
+        .btn-now {
+            padding: 0 1rem;
+            background-color: var(--btn-gray-bg);
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            min-width: 3rem;
+            color: var(--btn-gray-text);
+            /* KLUCZOWE: Ustawienie font-size w 'rem' */
+            font-size: 1rem; 
+        }
+
+        .btn-now:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-now:focus {
+            outline: var(--focus-ring);
+        }
+
+        /* POSTÓJ */
+        .rest-control {
+            display: flex;
+            gap: 10px;
+        }
+
+        .rest-control input {
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .btn-adjust {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            width: 3.5rem;
+            font-size: 1.5rem; /* Skaluje się z root */
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 2.75rem;
+        }
+
+        .btn-adjust:disabled {
+            background-color: #7f8c8d;
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        /* WYNIK */
+        #result-container {
+            text-align: center;
+            padding: 1.25rem;
+            background-color: var(--result-bg);
+            border: 2px solid var(--result-border);
+            border-radius: 8px;
+            margin-top: 1.25rem;
+            transition: background-color 0.3s;
+        }
+
+        #result-label {
+            font-size: 1rem;
+            color: var(--result-text);
+            margin-bottom: 0.3rem;
+            font-weight: bold;
+            opacity: 0.8;
+        }
+
+        #result-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--result-text);
+        }
+
+        /* HISTORIA */
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--text-secondary);
+            padding-bottom: 0.5rem;
+            opacity: 0.8;
+        }
+        
+        .card-header h3 {
+            margin: 0;
+            font-size: 1.2rem;
+        }
+
+        .btn-clear {
+            background: transparent;
+            border: 2px solid var(--danger-color);
+            color: var(--danger-color);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn-clear:hover {
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .history-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .history-item {
+            background: var(--card-bg);
+            border: 1px solid var(--input-border);
+            margin-bottom: 0.5rem;
+            padding: 1rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: transform 0.1s;
+            position: relative;
+        }
+
+        .history-item:hover, .history-item:focus {
+            border-color: var(--accent-color);
+            box-shadow: 0 0 5px var(--shadow-color);
+        }
+
+        .history-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .history-route {
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+
+        .history-result {
+            font-weight: 800;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+        
+        .history-meta {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        /* MODAL */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            color: var(--text-color);
+            padding: 2rem;
+            border-radius: 8px;
+            max-width: 500px;
+            width: 90%;
+            position: relative;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .close-modal {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-color);
+            cursor: pointer;
+        }
+        
+        .instruction-list {
+            padding-left: 20px;
+        }
+
+        .instruction-list li {
+            margin-bottom: 0.8rem;
+            font-size: 1rem;
+        }
+
+        /* FOOTER */
+        footer {
+            text-align: center;
+            padding: 1.5rem;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            background: var(--bg-color);
+            border-top: 1px solid var(--input-border);
+            margin-top: auto;
+        }
+    </style>
 </head>
-
 <body>
 
-  <h1>Kalkulator czasu jazdy</h1>
+    <header>
+        <h1>Kalkulator Pracy</h1>
+        <div class="tools-container">
+            <button class="tool-btn" id="btnTheme" aria-label="Przełącz tryb ciemny">🌓</button>
+            <button class="tool-btn" id="btnFontDown" aria-label="Zmniejsz czcionkę">A-</button>
+            <button class="tool-btn" id="btnFontUp" aria-label="Powiększ czcionkę">A+</button>
+            <button class="tool-btn" id="openHelp" aria-label="Instrukcja">?</button>
+        </div>
+    </header>
 
-  <div class="container">
-    <div class="calculator">
-      <div class="row">
-        <label for="start">Od godz./min.:</label>
-        <input type="time" id="start" />
-      </div>
+    <main>
+        <div class="modal-overlay" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+            <div class="modal-content">
+                <button class="close-modal" id="closeHelp" aria-label="Zamknij">&times;</button>
+                <h2 id="modalTitle">Instrukcja</h2>
+                <ul class="instruction-list">
+                    <li><strong>Wpisz godziny:</strong> Podaj czas rozpoczęcia i zakończenia.</li>
+                    <li><strong>Teraz:</strong> Kliknij przycisk "Teraz", aby wstawić obecny czas.</li>
+                    <li><strong>Postój:</strong> Dodaj minuty przerwy plusem lub minusem.</li>
+                    <li><strong>Wynik:</strong> Czas pracy w minutach obliczy się automatycznie.</li>
+                    <li><strong>Zapis:</strong> Historia zapisuje się sama po 5 sekundach bezczynności.</li>
+                    <li><strong>Ułatwienia:</strong> Twoje ustawienia wielkości tekstu i trybu (jasny/ciemny) są zapamiętywane przez aplikację.</li>
+                </ul>
+            </div>
+        </div>
 
-      <div class="row">
-        <label for="end">Do godz./min.:</label>
-        <input type="time" id="end" />
-      </div>
+        <div class="card">
+            <div class="form-group">
+                <label for="startTime">Godzina rozpoczęcia:</label>
+                <div class="input-group">
+                    <input type="time" id="startTime" class="input-trigger">
+                    <button type="button" class="btn-now" data-target="startTime">Teraz</button>
+                </div>
+            </div>
 
-      <div class="row">
-        <label for="postoj">Czas postoju (minuty):</label>
-        <input type="number" id="postoj" min="0" placeholder="np. 15" />
-      </div>
+            <div class="form-group">
+                <label for="endTime">Godzina zakończenia:</label>
+                <div class="input-group">
+                    <input type="time" id="endTime" class="input-trigger">
+                    <button type="button" class="btn-now" data-target="endTime">Teraz</button>
+                </div>
+            </div>
 
-      <div class="row">
-        <label for="jazda">Czas jazdy (minuty):</label>
-        <input type="text" id="jazda" readonly />
-      </div>
+            <div class="form-group">
+                <label for="restTime">Czas postoju (minuty):</label>
+                <div class="rest-control">
+                    <button class="btn-adjust" id="btnMinus" aria-label="Mniej" disabled>-</button>
+                    <input type="number" id="restTime" value="0" min="0" class="input-trigger">
+                    <button class="btn-adjust" id="btnPlus" aria-label="Więcej">+</button>
+                </div>
+            </div>
 
-      <button id="btn-oblicz" onclick="oblicz()">Oblicz</button>
-      <button id="btn-clear" onclick="wyczysc()">Wyczyść dane</button>
+            <div id="result-container" role="status" aria-live="polite">
+                <div id="result-label">Czas jazdy:</div>
+                <div id="result-value">0 min</div>
+            </div>
+        </div>
 
-      <div class="error" id="error"></div>
-    </div>
-  </div>
+        <div class="card">
+            <div class="card-header">
+                <h3>Historia</h3>
+                <button class="btn-clear" id="btnClearHistory">Wyczyść</button>
+            </div>
+            <ul class="history-list" id="historyList">
+                </ul>
+        </div>
+    </main>
 
-  <footer>
-    © 2025 | Projekt wykonany przez
-    <a href="https://chatgpt.com" target="_blank">Navi</a> oraz <a>Piotr M 🚂</a>
-       <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+    <footer>
+        <p>Wersja aplikacji: v1.4</p>
+        <p>Współautorzy: Gemini & Piotr M 🚂</p>
+    </footer>
 
-  gtag('config', 'G-W05T4L1HFD');
-</script>
-  </footer>
+    <script>
+        // --- ZMIENNE DOM ---
+        const startTimeInput = document.getElementById('startTime');
+        const endTimeInput = document.getElementById('endTime');
+        const restTimeInput = document.getElementById('restTime');
+        const resultValue = document.getElementById('result-value');
+        const historyList = document.getElementById('historyList');
+        const btnMinus = document.getElementById('btnMinus');
+        const btnPlus = document.getElementById('btnPlus');
+        
+        // Narzędzia
+        const btnTheme = document.getElementById('btnTheme');
+        const btnFontUp = document.getElementById('btnFontUp');
+        const btnFontDown = document.getElementById('btnFontDown');
+        
+        // Modal
+        const openHelp = document.getElementById('openHelp');
+        const closeHelp = document.getElementById('closeHelp');
+        const helpModal = document.getElementById('helpModal');
 
-  <script>
-    window.addEventListener("DOMContentLoaded", () => {
-      document.getElementById("start").value = localStorage.getItem("start") || "";
-      document.getElementById("end").value = localStorage.getItem("end") || "";
-      document.getElementById("postoj").value = localStorage.getItem("postoj") || "";
-      document.getElementById("jazda").value = localStorage.getItem("jazda") || "";
-    });
+        let debounceTimer;
+        const DEBOUNCE_DELAY = 5000;
+        
+        const LS_KEY_INPUTS = 'maszynista_inputs';
+        const LS_KEY_HISTORY = 'maszynista_history';
+        const LS_KEY_THEME = 'maszynista_theme';
+        const LS_KEY_FONT = 'maszynista_font';
 
-    function zapiszDane() {
-      localStorage.setItem("start", document.getElementById("start").value);
-      localStorage.setItem("end", document.getElementById("end").value);
-      localStorage.setItem("postoj", document.getElementById("postoj").value);
-      localStorage.setItem("jazda", document.getElementById("jazda").value);
-    }
+        // --- INIT: NAJWAŻNIEJSZE - WCZYTYWANIE USTAWIEŃ ---
+        // Ta funkcja uruchamia się natychmiast po załadowaniu strony
+        document.addEventListener('DOMContentLoaded', () => {
+            loadPreferences();      // 1. Przywróć wygląd (font, motyw)
+            loadFromLocalStorage(); // 2. Przywróć dane (godziny)
+            calculate();            // 3. Przelicz wynik
+            renderHistory();        // 4. Pokaż historię
+        });
 
-    function wyczysc() {
-      document.getElementById("start").value = "";
-      document.getElementById("end").value = "";
-      document.getElementById("postoj").value = "";
-      document.getElementById("jazda").value = "";
-      document.getElementById("error").textContent = "";
+        // --- ZARZĄDZANIE WYGLĄDEM I PAMIĘCIĄ USTAWIEŃ ---
+        
+        // 1. Motyw
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const isDark = document.body.classList.contains('dark-mode');
+            // Zapisz wybór użytkownika
+            localStorage.setItem(LS_KEY_THEME, isDark ? 'dark' : 'light');
+        }
 
-      localStorage.clear();
-    }
+        // 2. Czcionka
+        function adjustFontSize(change) {
+            const root = document.documentElement;
+            const currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--base-font-size')) || 16;
+            let newSize = currentSize + change;
 
-    function oblicz() {
-      const start = document.getElementById("start").value;
-      const end = document.getElementById("end").value;
-      const postoj = document.getElementById("postoj").value;
-      const errorDiv = document.getElementById("error");
-      const jazdaInput = document.getElementById("jazda");
+            // Limity (min 12px, max 26px)
+            if (newSize < 12) newSize = 12;
+            if (newSize > 26) newSize = 26;
 
-      errorDiv.textContent = "";
-      jazdaInput.value = "";
+            root.style.setProperty('--base-font-size', newSize + 'px');
+            // Zapisz wybór użytkownika
+            localStorage.setItem(LS_KEY_FONT, newSize);
+        }
 
-      if (!start || !end || postoj === "") {
-        errorDiv.textContent = "Uzupełnij wszystkie pola.";
-        return;
-      }
+        // Funkcja wczytująca ustawienia przy starcie
+        function loadPreferences() {
+            // Motyw
+            const savedTheme = localStorage.getItem(LS_KEY_THEME);
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+            }
 
-      const [sh, sm] = start.split(":").map(Number);
-      const [eh, em] = end.split(":").map(Number);
+            // Czcionka
+            const savedFont = localStorage.getItem(LS_KEY_FONT);
+            if (savedFont) {
+                document.documentElement.style.setProperty('--base-font-size', savedFont + 'px');
+            }
+        }
 
-      if (isNaN(sh) || isNaN(sm) || isNaN(eh) || isNaN(em) ||
-          sh > 23 || sm > 59 || eh > 23 || em > 59) {
-        errorDiv.textContent = "Nieprawidłowy format godziny.";
-        return;
-      }
+        // Listenery narzędzi
+        btnTheme.addEventListener('click', toggleTheme);
+        btnFontUp.addEventListener('click', () => adjustFontSize(2));
+        btnFontDown.addEventListener('click', () => adjustFontSize(-2));
 
-      let startMinutes = sh * 60 + sm;
-      let endMinutes = eh * 60 + em;
 
-      if (endMinutes < startMinutes) {
-        endMinutes += 24 * 60;
-      }
+        // --- OBSŁUGA CZASU "TERAZ" ---
+        document.querySelectorAll('.btn-now').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                const targetId = e.target.getAttribute('data-target');
+                const now = new Date();
+                const timeString = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
+                
+                document.getElementById(targetId).value = timeString;
+                
+                calculate();
+                triggerHistorySave();
+            });
+        });
 
-      const total = endMinutes - startMinutes;
-      const postojMinutes = parseInt(postoj, 10);
+        // --- MODAL ---
+        openHelp.addEventListener('click', () => helpModal.style.display = 'flex');
+        closeHelp.addEventListener('click', () => helpModal.style.display = 'none');
+        window.addEventListener('click', (e) => {
+            if (e.target === helpModal) helpModal.style.display = 'none';
+        });
 
-      if (isNaN(postojMinutes) || postojMinutes < 0) {
-        errorDiv.textContent = "Nieprawidłowa wartość czasu postoju.";
-        return;
-      }
+        // --- OBLICZENIA ---
+        function calculate() {
+            const start = startTimeInput.value;
+            const end = endTimeInput.value;
+            let rest = parseInt(restTimeInput.value);
 
-      const jazda = total - postojMinutes;
+            if (isNaN(rest) || rest < 0) rest = 0;
 
-      if (jazda < 0) {
-        errorDiv.textContent = "Czas postoju przekracza całkowity czas przejazdu.";
-        return;
-      }
+            if (rest <= 0) {
+                btnMinus.disabled = true;
+                if (rest < 0) restTimeInput.value = 0;
+            } else {
+                btnMinus.disabled = false;
+            }
 
-      jazdaInput.value = jazda + " min";
-      zapiszDane();
-    }
-  </script>
+            saveInputsToLocalStorage();
 
+            if (!start || !end) {
+                resultValue.innerText = "0 min";
+                return null;
+            }
+
+            const startMinutes = timeToMinutes(start);
+            let endMinutes = timeToMinutes(end);
+
+            if (endMinutes < startMinutes) {
+                endMinutes += 24 * 60;
+            }
+
+            let duration = endMinutes - startMinutes - rest;
+            if (duration < 0) duration = 0;
+
+            resultValue.innerText = `${duration} min`;
+
+            return {
+                start,
+                end,
+                rest,
+                result: `${duration} min`,
+                timestamp: new Date().toLocaleDateString('pl-PL') + ' ' + new Date().toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})
+            };
+        }
+
+        // --- HISTORIA ---
+        function triggerHistorySave() {
+            clearTimeout(debounceTimer);
+            debounceTimer = setTimeout(() => {
+                const data = calculate();
+                if (data) {
+                    addToHistory(data);
+                }
+            }, DEBOUNCE_DELAY);
+        }
+
+        function addToHistory(data) {
+            let history = getHistoryFromStorage();
+            history.unshift(data);
+            localStorage.setItem(LS_KEY_HISTORY, JSON.stringify(history));
+            renderHistory();
+        }
+
+        function renderHistory() {
+            const history = getHistoryFromStorage();
+            historyList.innerHTML = '';
+
+            history.forEach((item) => {
+                const li = document.createElement('li');
+                li.className = 'history-item';
+                li.setAttribute('tabindex', '0');
+                li.setAttribute('role', 'button');
+                li.setAttribute('aria-label', `Wczytaj trasę: ${item.start} do ${item.end}, wynik ${item.result}`);
+                
+                li.innerHTML = `
+                    <div class="history-content">
+                        <div>
+                            <div class="history-route">${item.start} - ${item.end}</div>
+                            <div class="history-meta">Postój: ${item.rest}m | ${item.timestamp}</div>
+                        </div>
+                        <div class="history-result">${item.result}</div>
+                    </div>
+                `;
+                
+                li.addEventListener('click', () => loadPreset(item));
+                li.addEventListener('keydown', (e) => {
+                    if (e.key === 'Enter' || e.key === ' ') loadPreset(item);
+                });
+
+                historyList.appendChild(li);
+            });
+        }
+
+        function loadPreset(item) {
+            startTimeInput.value = item.start;
+            endTimeInput.value = item.end;
+            restTimeInput.value = item.rest;
+            calculate();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function getHistoryFromStorage() {
+            const stored = localStorage.getItem(LS_KEY_HISTORY);
+            return stored ? JSON.parse(stored) : [];
+        }
+
+        // --- STORAGE DANYCH FORMULARZA ---
+        function saveInputsToLocalStorage() {
+            const inputsData = {
+                start: startTimeInput.value,
+                end: endTimeInput.value,
+                rest: restTimeInput.value
+            };
+            localStorage.setItem(LS_KEY_INPUTS, JSON.stringify(inputsData));
+        }
+
+        function loadFromLocalStorage() {
+            const stored = localStorage.getItem(LS_KEY_INPUTS);
+            if (stored) {
+                const data = JSON.parse(stored);
+                startTimeInput.value = data.start || '';
+                endTimeInput.value = data.end || '';
+                restTimeInput.value = data.rest || '0';
+            }
+        }
+
+        document.getElementById('btnClearHistory').addEventListener('click', () => {
+            if(confirm("Usunąć historię?")) {
+                localStorage.removeItem(LS_KEY_HISTORY);
+                renderHistory();
+            }
+        });
+
+        // --- HELPERY ---
+        function timeToMinutes(timeStr) {
+            const [h, m] = timeStr.split(':').map(Number);
+            return h * 60 + m;
+        }
+
+        // --- LISTENERY INPUTÓW ---
+        const inputs = document.querySelectorAll('.input-trigger');
+        inputs.forEach(input => {
+            input.addEventListener('input', () => {
+                calculate();
+                triggerHistorySave();
+            });
+        });
+
+        btnPlus.addEventListener('click', () => {
+            let val = parseInt(restTimeInput.value) || 0;
+            restTimeInput.value = val + 1;
+            calculate();
+            triggerHistorySave();
+        });
+
+        btnMinus.addEventListener('click', () => {
+            let val = parseInt(restTimeInput.value) || 0;
+            if (val > 0) {
+                restTimeInput.value = val - 1;
+                calculate();
+                triggerHistorySave();
+            }
+        });
+
+    </script>
 </body>
 </html>
-
