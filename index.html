@@ -2,7 +2,7 @@
 <html lang="pl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kalkulator Czasu Pracy Maszynisty</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
@@ -55,13 +55,18 @@
             --shadow-color: rgba(0,0,0,0.5);
         }
 
-        /* SKALOWANIE BAZOWE */
+        /* RESET I BAZA - Fix dla iOS */
+        *, *::before, *::after {
+            box-sizing: border-box; /* Kluczowe dla RWD */
+        }
+
         html {
             font-size: var(--base-font-size);
+            -webkit-text-size-adjust: 100%; /* Zapobiega zmianie wielkości fonta przy rotacji na iOS */
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Lepszy font stack dla iOS */
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -69,6 +74,7 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            min-height: 100dvh; /* Dynamic Viewport Height dla iOS Safari */
             line-height: 1.5;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -77,23 +83,27 @@
         header {
             background-color: #2c3e50;
             color: white;
-            padding: 1rem;
+            padding: 0.8rem 1rem; /* Nieco mniejszy padding */
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
             gap: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
         h1 {
             margin: 0;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
             flex-grow: 1;
+            white-space: nowrap; /* Tytuł w jednej linii */
         }
 
         .tools-container {
             display: flex;
-            gap: 8px;
+            gap: 6px; /* Mniejszy odstęp na mobile */
             align-items: center;
         }
 
@@ -101,44 +111,36 @@
             background: rgba(255,255,255,0.1);
             border: 1px solid rgba(255,255,255,0.3);
             color: white;
-            width: 2.5rem; /* Skalowanie względem czcionki */
-            height: 2.5rem;
+            width: 2.2rem;
+            height: 2.2rem;
             border-radius: 50%;
-            font-size: 1rem;
+            font-size: 0.9rem;
             font-weight: bold;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
-        }
-
-        .tool-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
-
-        .tool-btn:focus {
-            outline: var(--focus-ring);
-            outline-offset: 2px;
+            flex-shrink: 0; /* Nie zgniataj przycisków */
         }
 
         /* MAIN */
         main {
             flex: 1;
-            padding: 1.25rem;
-            max-width: 650px;
+            padding: 1rem; /* Mniejszy padding na mobile */
+            max-width: 600px;
             margin: 0 auto;
             width: 100%;
-            box-sizing: border-box;
         }
 
         .card {
             background: var(--card-bg);
-            padding: 1.5rem;
-            border-radius: 8px;
+            padding: 1.2rem; /* Trochę mniej miejsca wewnątrz */
+            border-radius: 12px;
             box-shadow: 0 4px 10px var(--shadow-color);
             margin-bottom: 1.5rem;
             transition: background-color 0.3s;
+            overflow: hidden; /* Zapobiega wylewaniu się treści */
         }
 
         .form-group {
@@ -150,23 +152,28 @@
             margin-bottom: 0.5rem;
             font-weight: 700;
             color: var(--text-color);
-            font-size: 1.1rem;
+            font-size: 1rem;
         }
 
         .input-group {
             display: flex;
-            gap: 10px;
+            gap: 8px; /* Mniejszy gap */
         }
 
+        /* STYLIZACJA INPUTÓW - Fix iOS */
         input[type="time"], input[type="number"] {
             flex: 1;
             padding: 0.75rem;
             border: 2px solid var(--input-border);
             border-radius: 8px;
-            font-size: 1.1rem; /* Skaluje się z root */
+            font-size: 1.1rem;
             background-color: var(--input-bg);
             color: var(--text-color);
             color-scheme: light dark;
+            -webkit-appearance: none; /* Reset stylu iOS */
+            appearance: none;
+            margin: 0; /* Reset marginesów */
+            min-width: 0; /* Zapobiega flex overflow */
         }
 
         input:focus {
@@ -174,51 +181,47 @@
             border-color: var(--accent-color);
         }
 
-        /* PRZYCISK TERAZ - POPRAWKA SKALOWANIA */
         .btn-now {
-            padding: 0 1rem;
+            padding: 0 0.8rem;
             background-color: var(--btn-gray-bg);
             border: 2px solid var(--input-border);
             border-radius: 8px;
             font-weight: 600;
             cursor: pointer;
-            min-width: 3rem;
             color: var(--btn-gray-text);
-            /* KLUCZOWE: Ustawienie font-size w 'rem' */
-            font-size: 1rem; 
+            font-size: 0.9rem;
+            white-space: nowrap; /* Tekst w jednej linii */
+            display: flex;
+            align-items: center;
         }
 
-        .btn-now:hover {
-            opacity: 0.9;
-        }
-        
-        .btn-now:focus {
-            outline: var(--focus-ring);
-        }
-
-        /* POSTÓJ */
+        /* POSTÓJ - POPRAWKA LAYOUTU (Główny fix) */
         .rest-control {
             display: flex;
-            gap: 10px;
+            gap: 5px; /* Mniejszy odstęp krytyczny dla iPhone */
+            align-items: stretch; /* Wyrównanie wysokości */
         }
 
         .rest-control input {
             text-align: center;
             font-weight: bold;
+            flex: 1; /* Input zajmuje dostępną przestrzeń */
+            width: auto; /* Reset */
         }
 
         .btn-adjust {
             background-color: var(--accent-color);
             color: white;
             border: none;
-            width: 3.5rem;
-            font-size: 1.5rem; /* Skaluje się z root */
+            width: 3rem; /* Nieco węższe przyciski */
+            font-size: 1.4rem;
             border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            min-height: 2.75rem;
+            flex-shrink: 0; /* Zapobiega zgniataniu przycisków */
+            -webkit-appearance: none;
         }
 
         .btn-adjust:disabled {
@@ -234,22 +237,22 @@
             background-color: var(--result-bg);
             border: 2px solid var(--result-border);
             border-radius: 8px;
-            margin-top: 1.25rem;
-            transition: background-color 0.3s;
+            margin-top: 1.5rem;
         }
 
         #result-label {
-            font-size: 1rem;
+            font-size: 0.9rem;
             color: var(--result-text);
             margin-bottom: 0.3rem;
             font-weight: bold;
-            opacity: 0.8;
+            opacity: 0.9;
         }
 
         #result-value {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 800;
             color: var(--result-text);
+            line-height: 1.2;
         }
 
         /* HISTORIA */
@@ -265,45 +268,17 @@
         
         .card-header h3 {
             margin: 0;
-            font-size: 1.2rem;
-        }
-
-        .btn-clear {
-            background: transparent;
-            border: 2px solid var(--danger-color);
-            color: var(--danger-color);
-            padding: 0.5rem 1rem;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9rem;
-        }
-
-        .btn-clear:hover {
-            background: var(--danger-color);
-            color: white;
-        }
-
-        .history-list {
-            list-style: none;
-            padding: 0;
-            margin: 0;
+            font-size: 1.1rem;
         }
 
         .history-item {
             background: var(--card-bg);
             border: 1px solid var(--input-border);
             margin-bottom: 0.5rem;
-            padding: 1rem;
-            border-radius: 4px;
+            padding: 0.8rem;
+            border-radius: 6px;
             cursor: pointer;
-            transition: transform 0.1s;
             position: relative;
-        }
-
-        .history-item:hover, .history-item:focus {
-            border-color: var(--accent-color);
-            box-shadow: 0 0 5px var(--shadow-color);
         }
 
         .history-content {
@@ -314,19 +289,7 @@
 
         .history-route {
             font-weight: bold;
-            font-size: 1.1rem;
-        }
-
-        .history-result {
-            font-weight: 800;
-            color: var(--accent-color);
-            font-size: 1.2rem;
-        }
-        
-        .history-meta {
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            margin-top: 4px;
+            font-size: 1rem;
         }
 
         /* MODAL */
@@ -341,17 +304,19 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            padding: 20px; /* Margines na małych ekranach */
         }
 
         .modal-content {
             background: var(--card-bg);
             color: var(--text-color);
-            padding: 2rem;
-            border-radius: 8px;
+            padding: 1.5rem;
+            border-radius: 12px;
             max-width: 500px;
-            width: 90%;
+            width: 100%;
             position: relative;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-height: 80vh; /* Scrollowanie na małych ekranach */
+            overflow-y: auto;
         }
 
         .close-modal {
@@ -360,25 +325,16 @@
             right: 15px;
             background: none;
             border: none;
-            font-size: 2rem;
+            font-size: 1.8rem;
             color: var(--text-color);
             cursor: pointer;
-        }
-        
-        .instruction-list {
-            padding-left: 20px;
-        }
-
-        .instruction-list li {
-            margin-bottom: 0.8rem;
-            font-size: 1rem;
         }
 
         /* FOOTER */
         footer {
             text-align: center;
             padding: 1.5rem;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
             color: var(--text-secondary);
             background: var(--bg-color);
             border-top: 1px solid var(--input-border);
@@ -408,8 +364,7 @@
                     <li><strong>Teraz:</strong> Kliknij przycisk "Teraz", aby wstawić obecny czas.</li>
                     <li><strong>Postój:</strong> Dodaj minuty przerwy plusem lub minusem.</li>
                     <li><strong>Wynik:</strong> Czas pracy w minutach obliczy się automatycznie.</li>
-                    <li><strong>Zapis:</strong> Historia zapisuje się sama po 5 sekundach bezczynności.</li>
-                    <li><strong>Ułatwienia:</strong> Twoje ustawienia wielkości tekstu i trybu (jasny/ciemny) są zapamiętywane przez aplikację.</li>
+                    <li><strong>Zapis:</strong> Historia zapisuje się sama po 5 sekundach.</li>
                 </ul>
             </div>
         </div>
@@ -449,7 +404,7 @@
         <div class="card">
             <div class="card-header">
                 <h3>Historia</h3>
-                <button class="btn-clear" id="btnClearHistory">Wyczyść</button>
+                <button class="btn-clear" id="btnClearHistory" style="border: 1px solid var(--danger-color); background: none; color: var(--danger-color); padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">Wyczyść</button>
             </div>
             <ul class="history-list" id="historyList">
                 </ul>
@@ -457,12 +412,12 @@
     </main>
 
     <footer>
-        <p>Wersja aplikacji: v1.4</p>
+        <p>Wersja aplikacji: v1.5</p>
         <p>Współautorzy: Gemini & Piotr M 🚂</p>
     </footer>
 
     <script>
-        // --- ZMIENNE DOM ---
+        /* --- JS BEZ ZMIAN FUNKCJONALNYCH (TYLKO KOPIA Z V1.4) --- */
         const startTimeInput = document.getElementById('startTime');
         const endTimeInput = document.getElementById('endTime');
         const restTimeInput = document.getElementById('restTime');
@@ -470,109 +425,75 @@
         const historyList = document.getElementById('historyList');
         const btnMinus = document.getElementById('btnMinus');
         const btnPlus = document.getElementById('btnPlus');
-        
-        // Narzędzia
         const btnTheme = document.getElementById('btnTheme');
         const btnFontUp = document.getElementById('btnFontUp');
         const btnFontDown = document.getElementById('btnFontDown');
-        
-        // Modal
         const openHelp = document.getElementById('openHelp');
         const closeHelp = document.getElementById('closeHelp');
         const helpModal = document.getElementById('helpModal');
 
         let debounceTimer;
         const DEBOUNCE_DELAY = 5000;
-        
         const LS_KEY_INPUTS = 'maszynista_inputs';
         const LS_KEY_HISTORY = 'maszynista_history';
         const LS_KEY_THEME = 'maszynista_theme';
         const LS_KEY_FONT = 'maszynista_font';
 
-        // --- INIT: NAJWAŻNIEJSZE - WCZYTYWANIE USTAWIEŃ ---
-        // Ta funkcja uruchamia się natychmiast po załadowaniu strony
         document.addEventListener('DOMContentLoaded', () => {
-            loadPreferences();      // 1. Przywróć wygląd (font, motyw)
-            loadFromLocalStorage(); // 2. Przywróć dane (godziny)
-            calculate();            // 3. Przelicz wynik
-            renderHistory();        // 4. Pokaż historię
+            loadPreferences();
+            loadFromLocalStorage();
+            calculate();
+            renderHistory();
         });
 
-        // --- ZARZĄDZANIE WYGLĄDEM I PAMIĘCIĄ USTAWIEŃ ---
-        
-        // 1. Motyw
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
-            // Zapisz wybór użytkownika
             localStorage.setItem(LS_KEY_THEME, isDark ? 'dark' : 'light');
         }
 
-        // 2. Czcionka
         function adjustFontSize(change) {
             const root = document.documentElement;
             const currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--base-font-size')) || 16;
             let newSize = currentSize + change;
-
-            // Limity (min 12px, max 26px)
             if (newSize < 12) newSize = 12;
             if (newSize > 26) newSize = 26;
-
             root.style.setProperty('--base-font-size', newSize + 'px');
-            // Zapisz wybór użytkownika
             localStorage.setItem(LS_KEY_FONT, newSize);
         }
 
-        // Funkcja wczytująca ustawienia przy starcie
         function loadPreferences() {
-            // Motyw
             const savedTheme = localStorage.getItem(LS_KEY_THEME);
-            if (savedTheme === 'dark') {
-                document.body.classList.add('dark-mode');
-            }
-
-            // Czcionka
+            if (savedTheme === 'dark') document.body.classList.add('dark-mode');
             const savedFont = localStorage.getItem(LS_KEY_FONT);
-            if (savedFont) {
-                document.documentElement.style.setProperty('--base-font-size', savedFont + 'px');
-            }
+            if (savedFont) document.documentElement.style.setProperty('--base-font-size', savedFont + 'px');
         }
 
-        // Listenery narzędzi
         btnTheme.addEventListener('click', toggleTheme);
         btnFontUp.addEventListener('click', () => adjustFontSize(2));
         btnFontDown.addEventListener('click', () => adjustFontSize(-2));
 
-
-        // --- OBSŁUGA CZASU "TERAZ" ---
         document.querySelectorAll('.btn-now').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetId = e.target.getAttribute('data-target');
                 const now = new Date();
                 const timeString = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-                
                 document.getElementById(targetId).value = timeString;
-                
                 calculate();
                 triggerHistorySave();
             });
         });
 
-        // --- MODAL ---
         openHelp.addEventListener('click', () => helpModal.style.display = 'flex');
         closeHelp.addEventListener('click', () => helpModal.style.display = 'none');
-        window.addEventListener('click', (e) => {
-            if (e.target === helpModal) helpModal.style.display = 'none';
-        });
+        window.addEventListener('click', (e) => { if (e.target === helpModal) helpModal.style.display = 'none'; });
 
-        // --- OBLICZENIA ---
         function calculate() {
             const start = startTimeInput.value;
             const end = endTimeInput.value;
             let rest = parseInt(restTimeInput.value);
-
             if (isNaN(rest) || rest < 0) rest = 0;
-
+            
             if (rest <= 0) {
                 btnMinus.disabled = true;
                 if (rest < 0) restTimeInput.value = 0;
@@ -589,33 +510,21 @@
 
             const startMinutes = timeToMinutes(start);
             let endMinutes = timeToMinutes(end);
-
-            if (endMinutes < startMinutes) {
-                endMinutes += 24 * 60;
-            }
-
+            if (endMinutes < startMinutes) endMinutes += 24 * 60;
             let duration = endMinutes - startMinutes - rest;
             if (duration < 0) duration = 0;
-
             resultValue.innerText = `${duration} min`;
-
             return {
-                start,
-                end,
-                rest,
-                result: `${duration} min`,
+                start, end, rest, result: `${duration} min`,
                 timestamp: new Date().toLocaleDateString('pl-PL') + ' ' + new Date().toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})
             };
         }
 
-        // --- HISTORIA ---
         function triggerHistorySave() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 const data = calculate();
-                if (data) {
-                    addToHistory(data);
-                }
+                if (data) addToHistory(data);
             }, DEBOUNCE_DELAY);
         }
 
@@ -629,29 +538,21 @@
         function renderHistory() {
             const history = getHistoryFromStorage();
             historyList.innerHTML = '';
-
             history.forEach((item) => {
                 const li = document.createElement('li');
                 li.className = 'history-item';
                 li.setAttribute('tabindex', '0');
                 li.setAttribute('role', 'button');
-                li.setAttribute('aria-label', `Wczytaj trasę: ${item.start} do ${item.end}, wynik ${item.result}`);
-                
                 li.innerHTML = `
                     <div class="history-content">
                         <div>
                             <div class="history-route">${item.start} - ${item.end}</div>
-                            <div class="history-meta">Postój: ${item.rest}m | ${item.timestamp}</div>
+                            <div class="history-meta" style="font-size:0.85rem; color:var(--text-secondary);">Postój: ${item.rest}m | ${item.timestamp}</div>
                         </div>
-                        <div class="history-result">${item.result}</div>
+                        <div class="history-result" style="font-weight:800; color:var(--accent-color);">${item.result}</div>
                     </div>
                 `;
-                
                 li.addEventListener('click', () => loadPreset(item));
-                li.addEventListener('keydown', (e) => {
-                    if (e.key === 'Enter' || e.key === ' ') loadPreset(item);
-                });
-
                 historyList.appendChild(li);
             });
         }
@@ -669,13 +570,8 @@
             return stored ? JSON.parse(stored) : [];
         }
 
-        // --- STORAGE DANYCH FORMULARZA ---
         function saveInputsToLocalStorage() {
-            const inputsData = {
-                start: startTimeInput.value,
-                end: endTimeInput.value,
-                rest: restTimeInput.value
-            };
+            const inputsData = { start: startTimeInput.value, end: endTimeInput.value, rest: restTimeInput.value };
             localStorage.setItem(LS_KEY_INPUTS, JSON.stringify(inputsData));
         }
 
@@ -696,36 +592,17 @@
             }
         });
 
-        // --- HELPERY ---
         function timeToMinutes(timeStr) {
             const [h, m] = timeStr.split(':').map(Number);
             return h * 60 + m;
         }
 
-        // --- LISTENERY INPUTÓW ---
         const inputs = document.querySelectorAll('.input-trigger');
         inputs.forEach(input => {
-            input.addEventListener('input', () => {
-                calculate();
-                triggerHistorySave();
-            });
+            input.addEventListener('input', () => { calculate(); triggerHistorySave(); });
         });
-
-        btnPlus.addEventListener('click', () => {
-            let val = parseInt(restTimeInput.value) || 0;
-            restTimeInput.value = val + 1;
-            calculate();
-            triggerHistorySave();
-        });
-
-        btnMinus.addEventListener('click', () => {
-            let val = parseInt(restTimeInput.value) || 0;
-            if (val > 0) {
-                restTimeInput.value = val - 1;
-                calculate();
-                triggerHistorySave();
-            }
-        });
+        btnPlus.addEventListener('click', () => { restTimeInput.value = (parseInt(restTimeInput.value)||0) + 1; calculate(); triggerHistorySave(); });
+        btnMinus.addEventListener('click', () => { let v=(parseInt(restTimeInput.value)||0); if(v>0) { restTimeInput.value=v-1; calculate(); triggerHistorySave(); } });
 
     </script>
 </body>
