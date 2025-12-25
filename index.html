@@ -55,26 +55,25 @@
             --shadow-color: rgba(0,0,0,0.5);
         }
 
-        /* RESET I BAZA - Fix dla iOS */
+        /* RESET I BAZA */
         *, *::before, *::after {
-            box-sizing: border-box; /* Kluczowe dla RWD */
+            box-sizing: border-box;
         }
 
         html {
             font-size: var(--base-font-size);
-            -webkit-text-size-adjust: 100%; /* Zapobiega zmianie wielkości fonta przy rotacji na iOS */
+            -webkit-text-size-adjust: 100%;
         }
 
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; /* Lepszy font stack dla iOS */
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            min-height: 100vh;
-            min-height: 100dvh; /* Dynamic Viewport Height dla iOS Safari */
+            min-height: 100dvh;
             line-height: 1.5;
             transition: background-color 0.3s, color 0.3s;
         }
@@ -83,7 +82,7 @@
         header {
             background-color: #2c3e50;
             color: white;
-            padding: 0.8rem 1rem; /* Nieco mniejszy padding */
+            padding: 0.8rem 1rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -98,12 +97,12 @@
             margin: 0;
             font-size: 1.2rem;
             flex-grow: 1;
-            white-space: nowrap; /* Tytuł w jednej linii */
+            white-space: nowrap;
         }
 
         .tools-container {
             display: flex;
-            gap: 6px; /* Mniejszy odstęp na mobile */
+            gap: 6px;
             align-items: center;
         }
 
@@ -121,13 +120,13 @@
             align-items: center;
             justify-content: center;
             transition: background 0.2s;
-            flex-shrink: 0; /* Nie zgniataj przycisków */
+            flex-shrink: 0;
         }
 
         /* MAIN */
         main {
             flex: 1;
-            padding: 1rem; /* Mniejszy padding na mobile */
+            padding: 1rem;
             max-width: 600px;
             margin: 0 auto;
             width: 100%;
@@ -135,12 +134,12 @@
 
         .card {
             background: var(--card-bg);
-            padding: 1.2rem; /* Trochę mniej miejsca wewnątrz */
+            padding: 1.2rem;
             border-radius: 12px;
             box-shadow: 0 4px 10px var(--shadow-color);
             margin-bottom: 1.5rem;
             transition: background-color 0.3s;
-            overflow: hidden; /* Zapobiega wylewaniu się treści */
+            overflow: hidden;
         }
 
         .form-group {
@@ -157,10 +156,9 @@
 
         .input-group {
             display: flex;
-            gap: 8px; /* Mniejszy gap */
+            gap: 8px;
         }
 
-        /* STYLIZACJA INPUTÓW - Fix iOS */
         input[type="time"], input[type="number"] {
             flex: 1;
             padding: 0.75rem;
@@ -170,15 +168,10 @@
             background-color: var(--input-bg);
             color: var(--text-color);
             color-scheme: light dark;
-            -webkit-appearance: none; /* Reset stylu iOS */
+            -webkit-appearance: none;
             appearance: none;
-            margin: 0; /* Reset marginesów */
-            min-width: 0; /* Zapobiega flex overflow */
-        }
-
-        input:focus {
-            outline: var(--focus-ring);
-            border-color: var(--accent-color);
+            margin: 0;
+            min-width: 0;
         }
 
         .btn-now {
@@ -190,37 +183,37 @@
             cursor: pointer;
             color: var(--btn-gray-text);
             font-size: 0.9rem;
-            white-space: nowrap; /* Tekst w jednej linii */
+            white-space: nowrap;
             display: flex;
             align-items: center;
         }
 
-        /* POSTÓJ - POPRAWKA LAYOUTU (Główny fix) */
+        /* POSTÓJ */
         .rest-control {
             display: flex;
-            gap: 5px; /* Mniejszy odstęp krytyczny dla iPhone */
-            align-items: stretch; /* Wyrównanie wysokości */
+            gap: 5px;
+            align-items: stretch;
         }
 
         .rest-control input {
             text-align: center;
             font-weight: bold;
-            flex: 1; /* Input zajmuje dostępną przestrzeń */
-            width: auto; /* Reset */
+            flex: 1;
+            width: auto;
         }
 
         .btn-adjust {
             background-color: var(--accent-color);
             color: white;
             border: none;
-            width: 3rem; /* Nieco węższe przyciski */
+            width: 3rem;
             font-size: 1.4rem;
             border-radius: 8px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            flex-shrink: 0; /* Zapobiega zgniataniu przycisków */
+            flex-shrink: 0;
             -webkit-appearance: none;
         }
 
@@ -255,20 +248,40 @@
             line-height: 1.2;
         }
 
-        /* HISTORIA */
+        /* HISTORIA - POPRAWIONY PRZYCISK */
         .card-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
             border-bottom: 1px solid var(--text-secondary);
-            padding-bottom: 0.5rem;
+            padding-bottom: 0.8rem;
             opacity: 0.8;
         }
         
         .card-header h3 {
             margin: 0;
             font-size: 1.1rem;
+        }
+
+        .btn-clear {
+            background: transparent;
+            border: 2px solid var(--danger-color);
+            color: var(--danger-color);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.9rem;
+            min-height: 40px; /* Większy obszar dotyku */
+            display: flex;
+            align-items: center;
+            transition: all 0.2s;
+        }
+
+        .btn-clear:active {
+            background-color: var(--danger-color);
+            color: white;
         }
 
         .history-item {
@@ -278,7 +291,6 @@
             padding: 0.8rem;
             border-radius: 6px;
             cursor: pointer;
-            position: relative;
         }
 
         .history-content {
@@ -304,7 +316,7 @@
             justify-content: center;
             align-items: center;
             z-index: 1000;
-            padding: 20px; /* Margines na małych ekranach */
+            padding: 20px;
         }
 
         .modal-content {
@@ -315,7 +327,7 @@
             max-width: 500px;
             width: 100%;
             position: relative;
-            max-height: 80vh; /* Scrollowanie na małych ekranach */
+            max-height: 80vh;
             overflow-y: auto;
         }
 
@@ -365,6 +377,7 @@
                     <li><strong>Postój:</strong> Dodaj minuty przerwy plusem lub minusem.</li>
                     <li><strong>Wynik:</strong> Czas pracy w minutach obliczy się automatycznie.</li>
                     <li><strong>Zapis:</strong> Historia zapisuje się sama po 5 sekundach.</li>
+                    <li><strong>Wyczyść:</strong> Przycisk "Wyczyść" usuwa całą historię kalkulatora.</li>
                 </ul>
             </div>
         </div>
@@ -404,7 +417,7 @@
         <div class="card">
             <div class="card-header">
                 <h3>Historia</h3>
-                <button class="btn-clear" id="btnClearHistory" style="border: 1px solid var(--danger-color); background: none; color: var(--danger-color); padding: 5px 10px; border-radius: 4px; font-weight: bold; cursor: pointer;">Wyczyść</button>
+                <button class="btn-clear" id="btnClearHistory">Wyczyść</button>
             </div>
             <ul class="history-list" id="historyList">
                 </ul>
@@ -412,12 +425,12 @@
     </main>
 
     <footer>
-        <p>Wersja aplikacji: v1.5</p>
+        <p>Wersja aplikacji: v1.6</p>
         <p>Współautorzy: Gemini & Piotr M 🚂</p>
     </footer>
 
     <script>
-        /* --- JS BEZ ZMIAN FUNKCJONALNYCH (TYLKO KOPIA Z V1.4) --- */
+        // --- ZMIENNE ---
         const startTimeInput = document.getElementById('startTime');
         const endTimeInput = document.getElementById('endTime');
         const restTimeInput = document.getElementById('restTime');
@@ -425,6 +438,8 @@
         const historyList = document.getElementById('historyList');
         const btnMinus = document.getElementById('btnMinus');
         const btnPlus = document.getElementById('btnPlus');
+        const btnClearHistory = document.getElementById('btnClearHistory'); // Dodane tutaj!
+        
         const btnTheme = document.getElementById('btnTheme');
         const btnFontUp = document.getElementById('btnFontUp');
         const btnFontDown = document.getElementById('btnFontDown');
@@ -439,6 +454,7 @@
         const LS_KEY_THEME = 'maszynista_theme';
         const LS_KEY_FONT = 'maszynista_font';
 
+        // --- INIT ---
         document.addEventListener('DOMContentLoaded', () => {
             loadPreferences();
             loadFromLocalStorage();
@@ -446,6 +462,24 @@
             renderHistory();
         });
 
+        // --- OBSŁUGA PRZYCISKU WYCZYŚĆ (POPRAWIONA) ---
+        if (btnClearHistory) {
+            btnClearHistory.addEventListener('click', () => {
+                // Sprawdź czy jest co usuwać
+                const currentHistory = getHistoryFromStorage();
+                if (currentHistory.length === 0) {
+                    alert("Historia jest już pusta.");
+                    return;
+                }
+
+                if (confirm("Czy na pewno chcesz usunąć całą historię kalkulatora?")) {
+                    localStorage.removeItem(LS_KEY_HISTORY);
+                    renderHistory();
+                }
+            });
+        }
+
+        // --- WYGLĄD ---
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
@@ -473,6 +507,12 @@
         btnFontUp.addEventListener('click', () => adjustFontSize(2));
         btnFontDown.addEventListener('click', () => adjustFontSize(-2));
 
+        // --- MODAL ---
+        openHelp.addEventListener('click', () => helpModal.style.display = 'flex');
+        closeHelp.addEventListener('click', () => helpModal.style.display = 'none');
+        window.addEventListener('click', (e) => { if (e.target === helpModal) helpModal.style.display = 'none'; });
+
+        // --- LOGIKA "TERAZ" ---
         document.querySelectorAll('.btn-now').forEach(btn => {
             btn.addEventListener('click', (e) => {
                 const targetId = e.target.getAttribute('data-target');
@@ -484,10 +524,7 @@
             });
         });
 
-        openHelp.addEventListener('click', () => helpModal.style.display = 'flex');
-        closeHelp.addEventListener('click', () => helpModal.style.display = 'none');
-        window.addEventListener('click', (e) => { if (e.target === helpModal) helpModal.style.display = 'none'; });
-
+        // --- OBLICZENIA ---
         function calculate() {
             const start = startTimeInput.value;
             const end = endTimeInput.value;
@@ -538,6 +575,12 @@
         function renderHistory() {
             const history = getHistoryFromStorage();
             historyList.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<li style="padding:15px; text-align:center; color:var(--text-secondary);">Brak zapisanych tras</li>';
+                return;
+            }
+
             history.forEach((item) => {
                 const li = document.createElement('li');
                 li.className = 'history-item';
@@ -584,13 +627,6 @@
                 restTimeInput.value = data.rest || '0';
             }
         }
-
-        document.getElementById('btnClearHistory').addEventListener('click', () => {
-            if(confirm("Usunąć historię?")) {
-                localStorage.removeItem(LS_KEY_HISTORY);
-                renderHistory();
-            }
-        });
 
         function timeToMinutes(timeStr) {
             const [h, m] = timeStr.split(':').map(Number);
