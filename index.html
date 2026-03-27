@@ -3,12 +3,15 @@
 <head>
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kalkulator Czasu Pracy Maszynisty</title>
     
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
     <script>
+      // Wersja kodu: v1.7
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
@@ -250,7 +253,7 @@
             line-height: 1.2;
         }
 
-        /* HISTORIA - POPRAWIONY PRZYCISK */
+        /* HISTORIA */
         .card-header {
             display: flex;
             justify-content: space-between;
@@ -275,7 +278,7 @@
             font-weight: bold;
             cursor: pointer;
             font-size: 0.9rem;
-            min-height: 40px; /* Większy obszar dotyku */
+            min-height: 40px;
             display: flex;
             align-items: center;
             transition: all 0.2s;
@@ -427,11 +430,25 @@
     </main>
 
     <footer>
-        <p>Wersja aplikacji: v1.6</p>
+        <p>Wersja aplikacji: v1.7</p>
         <p>Współautorzy: Gemini & Piotr M 🚂</p>
     </footer>
 
     <script>
+        // Wersja kodu: v1.7
+        // --- REJESTRACJA SERVICE WORKERA ---
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker zarejestrowany z sukcesem: ', registration.scope);
+                    })
+                    .catch(error => {
+                        console.log('Rejestracja ServiceWorkera nie powiodła się: ', error);
+                    });
+            });
+        }
+
         // --- ZMIENNE ---
         const startTimeInput = document.getElementById('startTime');
         const endTimeInput = document.getElementById('endTime');
@@ -440,7 +457,7 @@
         const historyList = document.getElementById('historyList');
         const btnMinus = document.getElementById('btnMinus');
         const btnPlus = document.getElementById('btnPlus');
-        const btnClearHistory = document.getElementById('btnClearHistory'); // Dodane tutaj!
+        const btnClearHistory = document.getElementById('btnClearHistory');
         
         const btnTheme = document.getElementById('btnTheme');
         const btnFontUp = document.getElementById('btnFontUp');
@@ -464,10 +481,9 @@
             renderHistory();
         });
 
-        // --- OBSŁUGA PRZYCISKU WYCZYŚĆ (POPRAWIONA) ---
+        // --- OBSŁUGA PRZYCISKU WYCZYŚĆ ---
         if (btnClearHistory) {
             btnClearHistory.addEventListener('click', () => {
-                // Sprawdź czy jest co usuwać
                 const currentHistory = getHistoryFromStorage();
                 if (currentHistory.length === 0) {
                     alert("Historia jest już pusta.");
@@ -486,6 +502,12 @@
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem(LS_KEY_THEME, isDark ? 'dark' : 'light');
+            
+            // Aktualizacja metatagu theme-color podczas przełączania trybu
+            const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+            if(metaThemeColor) {
+                metaThemeColor.setAttribute('content', isDark ? '#1e1e1e' : '#2c3e50');
+            }
         }
 
         function adjustFontSize(change) {
@@ -500,7 +522,11 @@
 
         function loadPreferences() {
             const savedTheme = localStorage.getItem(LS_KEY_THEME);
-            if (savedTheme === 'dark') document.body.classList.add('dark-mode');
+            if (savedTheme === 'dark') {
+                document.body.classList.add('dark-mode');
+                const metaThemeColor = document.querySelector('meta[name="theme-color"]');
+                if(metaThemeColor) metaThemeColor.setAttribute('content', '#1e1e1e');
+            }
             const savedFont = localStorage.getItem(LS_KEY_FONT);
             if (savedFont) document.documentElement.style.setProperty('--base-font-size', savedFont + 'px');
         }

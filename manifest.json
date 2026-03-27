@@ -1,0 +1,22 @@
+{
+  "name": "Kalkulator Czasu Pracy Maszynisty",
+  "short_name": "Kalkulator Pracy",
+  "description": "Narzędzie do obliczania czasu jazdy maszynisty.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#f0f2f5",
+  "theme_color": "#2c3e50",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    },
+    {
+      "src": "apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    }
+  ]
+}
