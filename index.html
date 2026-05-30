@@ -1,398 +1,74 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <link rel="icon" type="image/svg+xml" href="favicon.svg">
-    <link rel="apple-touch-icon" href="apple-touch-icon.png">
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2c3e50">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kalkulator Czasu Pracy Maszynisty</title>
     
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-W05T4L1HFD"></script>
-    <script>
-      // Wersja kodu: v1.7
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-      gtag('config', 'G-W05T4L1HFD');
-    </script>
-    <style>
-        /* CSS VARIABLES */
-        :root {
-            --base-font-size: 16px; 
-            
-            /* Motyw JASNY */
-            --primary-color: #1a252f;
-            --accent-color: #0056b3;
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-color: #111111;
-            --text-secondary: #444444;
-            --input-bg: #ffffff;
-            --input-border: #767676;
-            --result-bg: #e3f2fd;
-            --result-border: #90caf9;
-            --result-text: #0d47a1;
-            --btn-gray-bg: #eee;
-            --btn-gray-text: #333;
-            --danger-color: #d32f2f;
-            --focus-ring: 3px solid #ffbf47;
-            --shadow-color: rgba(0,0,0,0.1);
-        }
-
-        /* Motyw CIEMNY */
-        body.dark-mode {
-            --primary-color: #ecf0f1;
-            --accent-color: #64b5f6;
-            --bg-color: #121212;
-            --card-bg: #1e1e1e;
-            --text-color: #e0e0e0;
-            --text-secondary: #b0b0b0;
-            --input-bg: #2c2c2c;
-            --input-border: #888;
-            --result-bg: #0d47a1;
-            --result-border: #1565c0;
-            --result-text: #ffffff;
-            --btn-gray-bg: #333;
-            --btn-gray-text: #ddd;
-            --danger-color: #ff5252;
-            --shadow-color: rgba(0,0,0,0.5);
-        }
-
-        /* RESET I BAZA */
-        *, *::before, *::after {
-            box-sizing: border-box;
-        }
-
-        html {
-            font-size: var(--base-font-size);
-            -webkit-text-size-adjust: 100%;
-        }
-
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100dvh;
-            line-height: 1.5;
-            transition: background-color 0.3s, color 0.3s;
-        }
-
-        /* HEADER */
-        header {
-            background-color: #2c3e50;
-            color: white;
-            padding: 0.8rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.2rem;
-            flex-grow: 1;
-            white-space: nowrap;
-        }
-
-        .tools-container {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
-
-        .tool-btn {
-            background: rgba(255,255,255,0.1);
-            border: 1px solid rgba(255,255,255,0.3);
-            color: white;
-            width: 2.2rem;
-            height: 2.2rem;
-            border-radius: 50%;
-            font-size: 0.9rem;
-            font-weight: bold;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.2s;
-            flex-shrink: 0;
-        }
-
-        /* MAIN */
-        main {
-            flex: 1;
-            padding: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        .card {
-            background: var(--card-bg);
-            padding: 1.2rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 10px var(--shadow-color);
-            margin-bottom: 1.5rem;
-            transition: background-color 0.3s;
-            overflow: hidden;
-        }
-
-        .form-group {
-            margin-bottom: 1.25rem;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 700;
-            color: var(--text-color);
-            font-size: 1rem;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 8px;
-        }
-
-        input[type="time"], input[type="number"] {
-            flex: 1;
-            padding: 0.75rem;
-            border: 2px solid var(--input-border);
-            border-radius: 8px;
-            font-size: 1.1rem;
-            background-color: var(--input-bg);
-            color: var(--text-color);
-            color-scheme: light dark;
-            -webkit-appearance: none;
-            appearance: none;
-            margin: 0;
-            min-width: 0;
-        }
-
-        .btn-now {
-            padding: 0 0.8rem;
-            background-color: var(--btn-gray-bg);
-            border: 2px solid var(--input-border);
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            color: var(--btn-gray-text);
-            font-size: 0.9rem;
-            white-space: nowrap;
-            display: flex;
-            align-items: center;
-        }
-
-        /* POSTÓJ */
-        .rest-control {
-            display: flex;
-            gap: 5px;
-            align-items: stretch;
-        }
-
-        .rest-control input {
-            text-align: center;
-            font-weight: bold;
-            flex: 1;
-            width: auto;
-        }
-
-        .btn-adjust {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            width: 3rem;
-            font-size: 1.4rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            flex-shrink: 0;
-            -webkit-appearance: none;
-        }
-
-        .btn-adjust:disabled {
-            background-color: #7f8c8d;
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* WYNIK */
-        #result-container {
-            text-align: center;
-            padding: 1.25rem;
-            background-color: var(--result-bg);
-            border: 2px solid var(--result-border);
-            border-radius: 8px;
-            margin-top: 1.5rem;
-        }
-
-        #result-label {
-            font-size: 0.9rem;
-            color: var(--result-text);
-            margin-bottom: 0.3rem;
-            font-weight: bold;
-            opacity: 0.9;
-        }
-
-        #result-value {
-            font-size: 2.2rem;
-            font-weight: 800;
-            color: var(--result-text);
-            line-height: 1.2;
-        }
-
-        /* HISTORIA */
-        .card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-            border-bottom: 1px solid var(--text-secondary);
-            padding-bottom: 0.8rem;
-            opacity: 0.8;
-        }
-        
-        .card-header h3 {
-            margin: 0;
-            font-size: 1.1rem;
-        }
-
-        .btn-clear {
-            background: transparent;
-            border: 2px solid var(--danger-color);
-            color: var(--danger-color);
-            padding: 0.5rem 1rem;
-            border-radius: 6px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.9rem;
-            min-height: 40px;
-            display: flex;
-            align-items: center;
-            transition: all 0.2s;
-        }
-
-        .btn-clear:active {
-            background-color: var(--danger-color);
-            color: white;
-        }
-
-        .history-item {
-            background: var(--card-bg);
-            border: 1px solid var(--input-border);
-            margin-bottom: 0.5rem;
-            padding: 0.8rem;
-            border-radius: 6px;
-            cursor: pointer;
-        }
-
-        .history-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .history-route {
-            font-weight: bold;
-            font-size: 1rem;
-        }
-
-        /* MODAL */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.8);
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            color: var(--text-color);
-            padding: 1.5rem;
-            border-radius: 12px;
-            max-width: 500px;
-            width: 100%;
-            position: relative;
-            max-height: 80vh;
-            overflow-y: auto;
-        }
-
-        .close-modal {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            background: none;
-            border: none;
-            font-size: 1.8rem;
-            color: var(--text-color);
-            cursor: pointer;
-        }
-
-        /* FOOTER */
-        footer {
-            text-align: center;
-            padding: 1.5rem;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            background: var(--bg-color);
-            border-top: 1px solid var(--input-border);
-            margin-top: auto;
-        }
-    </style>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
+    <link rel="apple-touch-icon" href="apple-touch-icon.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
+    
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
 </head>
 <body>
 
-    <header>
-        <h1>Kalkulator Pracy</h1>
-        <div class="tools-container">
-            <button class="tool-btn" id="btnTheme" aria-label="Przełącz tryb ciemny">🌓</button>
-            <button class="tool-btn" id="btnFontDown" aria-label="Zmniejsz czcionkę">A-</button>
-            <button class="tool-btn" id="btnFontUp" aria-label="Powiększ czcionkę">A+</button>
-            <button class="tool-btn" id="openHelp" aria-label="Instrukcja">?</button>
-        </div>
-    </header>
+    <div class="sticky-top">
+        <header>
+            <h1 class="header-title">Kalkulator Pracy</h1>
+            <div class="tools-container">
+                <button class="header-icon-btn" id="btnTheme" aria-label="Przełącz tryb ciemny">
+                    <span class="material-symbols-outlined">contrast</span>
+                </button>
+                <button class="header-icon-btn" id="btnFontDown" aria-label="Zmniejsz czcionkę">
+                    <span class="material-symbols-outlined">text_decrease</span>
+                </button>
+                <button class="header-icon-btn" id="btnFontUp" aria-label="Powiększ czcionkę">
+                    <span class="material-symbols-outlined">text_increase</span>
+                </button>
+                <button class="header-icon-btn" id="openHelp" aria-label="Instrukcja">
+                    <span class="material-symbols-outlined">help</span>
+                </button>
+            </div>
+        </header>
+    </div>
 
     <main>
         <div class="modal-overlay" id="helpModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
             <div class="modal-content">
-                <button class="close-modal" id="closeHelp" aria-label="Zamknij">&times;</button>
-                <h2 id="modalTitle">Instrukcja</h2>
+                <button class="close-modal" id="closeHelp" aria-label="Zamknij">
+                    <span class="material-symbols-outlined">close</span>
+                </button>
+                <h2 id="modalTitle" style="margin-top: 0;">Instrukcja</h2>
                 <ul class="instruction-list">
-                    <li><strong>Wpisz godziny:</strong> Podaj czas rozpoczęcia i zakończenia.</li>
-                    <li><strong>Teraz:</strong> Kliknij przycisk "Teraz", aby wstawić obecny czas.</li>
-                    <li><strong>Postój:</strong> Dodaj minuty przerwy plusem lub minusem.</li>
-                    <li><strong>Wynik:</strong> Czas pracy w minutach obliczy się automatycznie.</li>
-                    <li><strong>Zapis:</strong> Historia zapisuje się sama po 5 sekundach.</li>
-                    <li><strong>Wyczyść:</strong> Przycisk "Wyczyść" usuwa całą historię kalkulatora.</li>
+                    <li><strong>Wpisz godziny:</strong> Użyj przycisku "Teraz" lub dodaj czas skrótami np. "+1h", "+15m".</li>
+                    <li><strong>Łamanie doby:</strong> Aplikacja wykrywa, gdy praca przechodzi przez północ (np. 22:00 - 06:00) i poprawnie zlicza minuty.</li>
+                    <li><strong>Uniwersalny Kalkulator:</strong> Moduł pozwalający dodawać, odejmować (z wykrywaniem doby), a także mnożyć i dzielić czas przez zwykłe liczby.</li>
+                    <li><strong>Historia:</strong> Trasy zapisują się w pamięci lokalnej co 5 sekund od ostatniej zmiany. Można je wyczyścić jednym przyciskiem.</li>
                 </ul>
             </div>
         </div>
 
         <div class="card">
+            <div class="card-header">
+                <h3>Czas Jazdy</h3>
+            </div>
+            
             <div class="form-group">
                 <label for="startTime">Godzina rozpoczęcia:</label>
                 <div class="input-group">
                     <input type="time" id="startTime" class="input-trigger">
-                    <button type="button" class="btn-now" data-target="startTime">Teraz</button>
+                    <button type="button" class="btn-now" data-target="startTime">
+                        <span class="material-symbols-outlined" style="margin-right: 4px; font-size: 20px;">schedule</span> Teraz
+                    </button>
+                </div>
+                <div class="quick-time-btns">
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -60)">-1h</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -15)">-15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 15)">+15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 60)">+1h</button>
                 </div>
             </div>
 
@@ -400,56 +76,84 @@
                 <label for="endTime">Godzina zakończenia:</label>
                 <div class="input-group">
                     <input type="time" id="endTime" class="input-trigger">
-                    <button type="button" class="btn-now" data-target="endTime">Teraz</button>
+                    <button type="button" class="btn-now" data-target="endTime">
+                        <span class="material-symbols-outlined" style="margin-right: 4px; font-size: 20px;">schedule</span> Teraz
+                    </button>
+                </div>
+                <div class="quick-time-btns">
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -60)">-1h</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -15)">-15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 15)">+15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 60)">+1h</button>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="restTime">Czas postoju (minuty):</label>
                 <div class="rest-control">
-                    <button class="btn-adjust" id="btnMinus" aria-label="Mniej" disabled>-</button>
+                    <button class="btn-adjust" id="btnMinus" aria-label="Mniej" disabled>
+                        <span class="material-symbols-outlined">remove</span>
+                    </button>
                     <input type="number" id="restTime" value="0" min="0" class="input-trigger">
-                    <button class="btn-adjust" id="btnPlus" aria-label="Więcej">+</button>
+                    <button class="btn-adjust" id="btnPlus" aria-label="Więcej">
+                        <span class="material-symbols-outlined">add</span>
+                    </button>
                 </div>
             </div>
 
-            <div id="result-container" role="status" aria-live="polite">
-                <div id="result-label">Czas jazdy:</div>
-                <div id="result-value">0 min</div>
+            <div class="result-box" role="status" aria-live="polite">
+                <div class="result-label">Czas jazdy trasy</div>
+                <div class="result-value" id="result-value">0 min</div>
+            </div>
+        </div>
+
+        <div class="card" id="time-calculator">
+            <div class="card-header">
+                <h3>Uniwersalny Kalkulator Czasu</h3>
+            </div>
+            <div class="form-group">
+                <div class="math-calc-row">
+                    <input type="time" id="mathTimeA" class="math-trigger" placeholder="Czas A">
+                    <select id="mathOp" class="math-trigger">
+                        <option value="-">Minus (-)</option>
+                        <option value="+">Plus (+)</option>
+                        <option value="*">Razy (×)</option>
+                        <option value="/">Przez (÷)</option>
+                    </select>
+                    <input type="time" id="mathTimeB" class="math-trigger" placeholder="Czas B">
+                </div>
+            </div>
+            <div class="result-box" style="margin-top: 1rem; padding: 1rem;" role="status" aria-live="polite">
+                <div class="result-label">Wynik operacji</div>
+                <div class="result-value" id="mathResultValue" style="font-size: 2.2rem;">--:--</div>
             </div>
         </div>
 
         <div class="card">
             <div class="card-header">
-                <h3>Historia</h3>
-                <button class="btn-clear" id="btnClearHistory">Wyczyść</button>
+                <h3>Historia tras</h3>
+                <button class="btn-clear" id="btnClearHistory">
+                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> Wyczyść
+                </button>
             </div>
-            <ul class="history-list" id="historyList">
-                </ul>
+            <ul class="history-list" id="historyList"></ul>
         </div>
     </main>
 
     <footer>
-        <p>Wersja aplikacji: v1.7</p>
-        <p>Współautorzy: Gemini & Piotr M 🚂</p>
+        <p>Wersja aplikacji: v2.1</p>
+        <p>Współautorzy: Gemini, Piotr M 🚂, Thundo</p>
     </footer>
 
     <script>
-        // Wersja kodu: v1.7
-        // --- REJESTRACJA SERVICE WORKERA ---
+        // --- SERVICE WORKER ---
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('./sw.js')
-                    .then(registration => {
-                        console.log('ServiceWorker zarejestrowany z sukcesem: ', registration.scope);
-                    })
-                    .catch(error => {
-                        console.log('Rejestracja ServiceWorkera nie powiodła się: ', error);
-                    });
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log(err));
             });
         }
 
-        // --- ZMIENNE ---
+        // --- ZMIENNE GŁÓWNE ---
         const startTimeInput = document.getElementById('startTime');
         const endTimeInput = document.getElementById('endTime');
         const restTimeInput = document.getElementById('restTime');
@@ -457,17 +161,8 @@
         const historyList = document.getElementById('historyList');
         const btnMinus = document.getElementById('btnMinus');
         const btnPlus = document.getElementById('btnPlus');
-        const btnClearHistory = document.getElementById('btnClearHistory');
         
-        const btnTheme = document.getElementById('btnTheme');
-        const btnFontUp = document.getElementById('btnFontUp');
-        const btnFontDown = document.getElementById('btnFontDown');
-        const openHelp = document.getElementById('openHelp');
-        const closeHelp = document.getElementById('closeHelp');
-        const helpModal = document.getElementById('helpModal');
-
         let debounceTimer;
-        const DEBOUNCE_DELAY = 5000;
         const LS_KEY_INPUTS = 'maszynista_inputs';
         const LS_KEY_HISTORY = 'maszynista_history';
         const LS_KEY_THEME = 'maszynista_theme';
@@ -478,106 +173,108 @@
             loadPreferences();
             loadFromLocalStorage();
             calculate();
+            calculateMath(); // Inicjalizacja nowego kalkulatora
             renderHistory();
         });
 
-        // --- OBSŁUGA PRZYCISKU WYCZYŚĆ ---
-        if (btnClearHistory) {
-            btnClearHistory.addEventListener('click', () => {
-                const currentHistory = getHistoryFromStorage();
-                if (currentHistory.length === 0) {
-                    alert("Historia jest już pusta.");
-                    return;
-                }
-
-                if (confirm("Czy na pewno chcesz usunąć całą historię kalkulatora?")) {
-                    localStorage.removeItem(LS_KEY_HISTORY);
-                    renderHistory();
-                }
-            });
-        }
-
-        // --- WYGLĄD ---
+        // --- PREFERENCJE I WYGLĄD ---
         function toggleTheme() {
             document.body.classList.toggle('dark-mode');
             const isDark = document.body.classList.contains('dark-mode');
             localStorage.setItem(LS_KEY_THEME, isDark ? 'dark' : 'light');
-            
-            // Aktualizacja metatagu theme-color podczas przełączania trybu
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-            if(metaThemeColor) {
-                metaThemeColor.setAttribute('content', isDark ? '#1e1e1e' : '#2c3e50');
-            }
+            if(metaThemeColor) metaThemeColor.setAttribute('content', isDark ? '#0f172a' : '#2c3e50');
         }
 
         function adjustFontSize(change) {
             const root = document.documentElement;
             const currentSize = parseFloat(getComputedStyle(root).getPropertyValue('--base-font-size')) || 16;
-            let newSize = currentSize + change;
-            if (newSize < 12) newSize = 12;
-            if (newSize > 26) newSize = 26;
+            let newSize = Math.max(12, Math.min(currentSize + change, 26));
             root.style.setProperty('--base-font-size', newSize + 'px');
             localStorage.setItem(LS_KEY_FONT, newSize);
         }
 
         function loadPreferences() {
-            const savedTheme = localStorage.getItem(LS_KEY_THEME);
-            if (savedTheme === 'dark') {
+            if (localStorage.getItem(LS_KEY_THEME) === 'dark') {
                 document.body.classList.add('dark-mode');
                 const metaThemeColor = document.querySelector('meta[name="theme-color"]');
-                if(metaThemeColor) metaThemeColor.setAttribute('content', '#1e1e1e');
+                if(metaThemeColor) metaThemeColor.setAttribute('content', '#0f172a');
             }
             const savedFont = localStorage.getItem(LS_KEY_FONT);
             if (savedFont) document.documentElement.style.setProperty('--base-font-size', savedFont + 'px');
         }
 
-        btnTheme.addEventListener('click', toggleTheme);
-        btnFontUp.addEventListener('click', () => adjustFontSize(2));
-        btnFontDown.addEventListener('click', () => adjustFontSize(-2));
+        document.getElementById('btnTheme').addEventListener('click', toggleTheme);
+        document.getElementById('btnFontUp').addEventListener('click', () => adjustFontSize(2));
+        document.getElementById('btnFontDown').addEventListener('click', () => adjustFontSize(-2));
 
         // --- MODAL ---
-        openHelp.addEventListener('click', () => helpModal.style.display = 'flex');
-        closeHelp.addEventListener('click', () => helpModal.style.display = 'none');
+        const helpModal = document.getElementById('helpModal');
+        document.getElementById('openHelp').addEventListener('click', () => helpModal.style.display = 'flex');
+        document.getElementById('closeHelp').addEventListener('click', () => helpModal.style.display = 'none');
         window.addEventListener('click', (e) => { if (e.target === helpModal) helpModal.style.display = 'none'; });
 
-        // --- LOGIKA "TERAZ" ---
+        // --- SZYBKIE WPROWADZANIE CZASU ---
+        window.adjustTime = function(inputId, minutesToAdd) {
+            const input = document.getElementById(inputId);
+            let timeVal = input.value;
+            
+            // Jeśli pole jest puste, startujemy od obecnego czasu
+            if(!timeVal) {
+                const now = new Date();
+                timeVal = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
+            }
+
+            const [h, m] = timeVal.split(':').map(Number);
+            let totalMins = (h * 60) + m + minutesToAdd;
+            
+            // Logika łamania doby dla ujemnych / powyżej 24h wartości
+            totalMins = (totalMins % 1440 + 1440) % 1440;
+            
+            const newH = Math.floor(totalMins / 60).toString().padStart(2, '0');
+            const newM = (totalMins % 60).toString().padStart(2, '0');
+            
+            input.value = `${newH}:${newM}`;
+            calculate();
+            triggerHistorySave();
+        }
+
+        // --- PRZYCISK "TERAZ" ---
         document.querySelectorAll('.btn-now').forEach(btn => {
             btn.addEventListener('click', (e) => {
-                const targetId = e.target.getAttribute('data-target');
+                const targetId = e.target.closest('.btn-now').getAttribute('data-target');
                 const now = new Date();
-                const timeString = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
-                document.getElementById(targetId).value = timeString;
+                document.getElementById(targetId).value = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
                 calculate();
                 triggerHistorySave();
             });
         });
 
-        // --- OBLICZENIA ---
+        // --- KALKULATOR GŁÓWNY (TRASA) ---
         function calculate() {
             const start = startTimeInput.value;
             const end = endTimeInput.value;
             let rest = parseInt(restTimeInput.value);
             if (isNaN(rest) || rest < 0) rest = 0;
             
-            if (rest <= 0) {
-                btnMinus.disabled = true;
-                if (rest < 0) restTimeInput.value = 0;
-            } else {
-                btnMinus.disabled = false;
-            }
+            btnMinus.disabled = (rest <= 0);
+            if (rest < 0) restTimeInput.value = 0;
 
             saveInputsToLocalStorage();
 
             if (!start || !end) {
-                resultValue.innerText = "0 min";
-                return null;
+                resultValue.innerText = "0 min"; return null;
             }
 
-            const startMinutes = timeToMinutes(start);
-            let endMinutes = timeToMinutes(end);
-            if (endMinutes < startMinutes) endMinutes += 24 * 60;
-            let duration = endMinutes - startMinutes - rest;
+            const startMins = timeToMinutes(start);
+            let endMins = timeToMinutes(end);
+            
+            // Detekcja łamania doby w głównej trasie
+            if (endMins < startMins) endMins += 24 * 60; 
+            
+            let duration = endMins - startMins - rest;
             if (duration < 0) duration = 0;
+            
             resultValue.innerText = `${duration} min`;
             return {
                 start, end, rest, result: `${duration} min`,
@@ -585,12 +282,72 @@
             };
         }
 
+        // --- KALKULATOR MATEMATYCZNY (NOWOŚĆ) ---
+        function calculateMath() {
+            const mathTimeA = document.getElementById('mathTimeA').value;
+            const mathOp = document.getElementById('mathOp').value;
+            const mathInputB = document.getElementById('mathTimeB');
+            const mathResult = document.getElementById('mathResultValue');
+
+            if (!mathTimeA || !mathInputB.value) {
+                mathResult.innerHTML = "--:--"; return;
+            }
+
+            const minsA = timeToMinutes(mathTimeA);
+            let finalMins = 0;
+
+            if (mathOp === '+' || mathOp === '-') {
+                const minsB = timeToMinutes(mathInputB.value);
+                finalMins = (mathOp === '+') ? (minsA + minsB) : (minsA - minsB);
+                
+                // Obsługa łamania doby w odejmowaniu / dodawaniu
+                finalMins = (finalMins % 1440 + 1440) % 1440; 
+            } else {
+                // Mnożenie lub dzielenie
+                const scalarB = parseFloat(mathInputB.value);
+                if(isNaN(scalarB)) return;
+                
+                if (mathOp === '*') {
+                    finalMins = minsA * scalarB;
+                } else if (mathOp === '/') {
+                    if (scalarB === 0) { mathResult.innerText = "Błąd: /0"; return; }
+                    finalMins = minsA / scalarB;
+                }
+            }
+
+            // Omijanie błędów zaokrągleń
+            const absMins = Math.round(Math.abs(finalMins));
+            const sign = (finalMins < 0 && mathOp !== '+' && mathOp !== '-') ? "-" : "";
+            const resH = Math.floor(absMins / 60).toString().padStart(2, '0');
+            const resM = (absMins % 60).toString().padStart(2, '0');
+
+            mathResult.innerHTML = `${sign}${resH}:${resM} <br><small style="font-size:1.2rem; color:var(--text-secondary);">(${Math.round(finalMins)} minut)</small>`;
+        }
+
+        // Dynamiczna zmiana pola B dla operacji (* i /)
+        document.getElementById('mathOp').addEventListener('change', (e) => {
+            const op = e.target.value;
+            const inputB = document.getElementById('mathTimeB');
+            if (op === '+' || op === '-') {
+                inputB.type = 'time'; inputB.value = '';
+            } else {
+                inputB.type = 'number'; inputB.step = 'any'; inputB.placeholder = 'Wpisz liczbę'; inputB.value = '';
+            }
+            calculateMath();
+        });
+
+        document.querySelectorAll('.math-trigger').forEach(input => {
+            input.addEventListener('input', calculateMath);
+        });
+
+
+        // --- HISTORIA I ZAPIS ---
         function triggerHistorySave() {
             clearTimeout(debounceTimer);
             debounceTimer = setTimeout(() => {
                 const data = calculate();
                 if (data) addToHistory(data);
-            }, DEBOUNCE_DELAY);
+            }, 5000); // Zapis co 5 sekund bezruchu
         }
 
         function addToHistory(data) {
@@ -618,51 +375,51 @@
                     <div class="history-content">
                         <div>
                             <div class="history-route">${item.start} - ${item.end}</div>
-                            <div class="history-meta" style="font-size:0.85rem; color:var(--text-secondary);">Postój: ${item.rest}m | ${item.timestamp}</div>
+                            <div class="history-meta">Postój: ${item.rest} min | ${item.timestamp}</div>
                         </div>
-                        <div class="history-result" style="font-weight:800; color:var(--accent-color);">${item.result}</div>
+                        <div class="history-result">${item.result}</div>
                     </div>
                 `;
-                li.addEventListener('click', () => loadPreset(item));
+                li.addEventListener('click', () => {
+                    startTimeInput.value = item.start;
+                    endTimeInput.value = item.end;
+                    restTimeInput.value = item.rest;
+                    calculate();
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
                 historyList.appendChild(li);
             });
         }
 
-        function loadPreset(item) {
-            startTimeInput.value = item.start;
-            endTimeInput.value = item.end;
-            restTimeInput.value = item.rest;
-            calculate();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
+        document.getElementById('btnClearHistory').addEventListener('click', () => {
+            if (getHistoryFromStorage().length === 0) { alert("Historia jest już pusta."); return; }
+            if (confirm("Czy na pewno chcesz usunąć całą historię kalkulatora?")) {
+                localStorage.removeItem(LS_KEY_HISTORY);
+                renderHistory();
+            }
+        });
 
         function getHistoryFromStorage() {
-            const stored = localStorage.getItem(LS_KEY_HISTORY);
-            return stored ? JSON.parse(stored) : [];
+            const stored = localStorage.getItem(LS_KEY_HISTORY); return stored ? JSON.parse(stored) : [];
         }
 
         function saveInputsToLocalStorage() {
-            const inputsData = { start: startTimeInput.value, end: endTimeInput.value, rest: restTimeInput.value };
-            localStorage.setItem(LS_KEY_INPUTS, JSON.stringify(inputsData));
+            localStorage.setItem(LS_KEY_INPUTS, JSON.stringify({ start: startTimeInput.value, end: endTimeInput.value, rest: restTimeInput.value }));
         }
 
         function loadFromLocalStorage() {
             const stored = localStorage.getItem(LS_KEY_INPUTS);
             if (stored) {
                 const data = JSON.parse(stored);
-                startTimeInput.value = data.start || '';
-                endTimeInput.value = data.end || '';
-                restTimeInput.value = data.rest || '0';
+                startTimeInput.value = data.start || ''; endTimeInput.value = data.end || ''; restTimeInput.value = data.rest || '0';
             }
         }
 
         function timeToMinutes(timeStr) {
-            const [h, m] = timeStr.split(':').map(Number);
-            return h * 60 + m;
+            const [h, m] = timeStr.split(':').map(Number); return (h * 60) + m;
         }
 
-        const inputs = document.querySelectorAll('.input-trigger');
-        inputs.forEach(input => {
+        document.querySelectorAll('.input-trigger').forEach(input => {
             input.addEventListener('input', () => { calculate(); triggerHistorySave(); });
         });
         btnPlus.addEventListener('click', () => { restTimeInput.value = (parseInt(restTimeInput.value)||0) + 1; calculate(); triggerHistorySave(); });
