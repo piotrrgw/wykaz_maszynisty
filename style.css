@@ -170,7 +170,6 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 3px s
 }
 .btn-adjust:hover { background-color: var(--input-border); color: var(--accent-color); }
 
-
 /* KALKULATOR CZASOWY UNIWERSALNY */
 .math-calc-row {
     display: flex; gap: 0.5rem; align-items: center; flex-direction: column;

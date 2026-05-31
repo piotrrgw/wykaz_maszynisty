@@ -28,6 +28,9 @@
                 <button class="header-icon-btn" id="btnFontUp" aria-label="Powiększ czcionkę">
                     <span class="material-symbols-outlined">text_increase</span>
                 </button>
+                <button class="header-icon-btn" id="btnResetCache" aria-label="Wyczyść pamięć podręczną i odśwież">
+                    <span class="material-symbols-outlined">restart_alt</span>
+                </button>
                 <button class="header-icon-btn" id="openHelp" aria-label="Instrukcja">
                     <span class="material-symbols-outlined">help</span>
                 </button>
@@ -140,7 +143,7 @@
     </main>
 
     <footer>
-        <p>Wersja aplikacji: v2.2</p>
+        <p>Wersja aplikacji: v2.3</p>
         <p>Współautorzy: Gemini, Piotr M 🚂, Thundo</p>
     </footer>
 
@@ -207,12 +210,30 @@
         document.getElementById('closeHelp').addEventListener('click', () => helpModal.style.display = 'none');
         window.addEventListener('click', (e) => { if (e.target === helpModal) helpModal.style.display = 'none'; });
 
+        // --- RESTART I CZYSZCZENIE CACHE PWA ---
+        document.getElementById('btnResetCache').addEventListener('click', () => {
+            if ('caches' in window) {
+                caches.keys().then((cacheNames) => {
+                    return Promise.all(
+                        cacheNames.map((cacheName) => {
+                            return caches.delete(cacheName);
+                        })
+                    );
+                }).then(() => {
+                    window.location.reload();
+                }).catch(() => {
+                    window.location.reload();
+                });
+            } else {
+                window.location.reload();
+            }
+        });
+
         // --- SZYBKIE WPROWADZANIE CZASU ---
         window.adjustTime = function(inputId, minutesToAdd) {
             const input = document.getElementById(inputId);
             let timeVal = input.value;
             
-            // Jeśli pole jest puste, startujemy od obecnego czasu
             if(!timeVal) {
                 const now = new Date();
                 timeVal = `${now.getHours().toString().padStart(2,'0')}:${now.getMinutes().toString().padStart(2,'0')}`;
@@ -221,7 +242,6 @@
             const [h, m] = timeVal.split(':').map(Number);
             let totalMins = (h * 60) + m + minutesToAdd;
             
-            // Logika łamania doby dla ujemnych / powyżej 24h wartości
             totalMins = (totalMins % 1440 + 1440) % 1440;
             
             const newH = Math.floor(totalMins / 60).toString().padStart(2, '0');
@@ -234,7 +254,7 @@
         window.adjustRest = function(minutesToAdd) {
             let current = parseInt(restTimeInput.value);
             if(isNaN(current)) current = 0;
-            let newVal = Math.max(0, current + minutesToAdd); // Zapobiega wartościom ujemnym
+            let newVal = Math.max(0, current + minutesToAdd);
             restTimeInput.value = newVal;
             calculate();
         }
@@ -269,7 +289,6 @@
             const startMins = timeToMinutes(start);
             let endMins = timeToMinutes(end);
             
-            // Detekcja łamania doby w głównej trasie
             if (endMins < startMins) endMins += 24 * 60; 
             
             let duration = endMins - startMins - rest;
@@ -296,10 +315,8 @@
                 const minsB = timeToMinutes(mathInputB.value);
                 finalMins = (mathOp === '+') ? (minsA + minsB) : (minsA - minsB);
                 
-                // Obsługa łamania doby
                 finalMins = (finalMins % 1440 + 1440) % 1440; 
             } else {
-                // Mnożenie lub dzielenie
                 const scalarB = parseFloat(mathInputB.value);
                 if(isNaN(scalarB)) return;
                 
@@ -319,7 +336,6 @@
             mathResult.innerHTML = `${sign}${resH}:${resM} <br><small style="font-size:1.2rem; color:var(--text-secondary);">(${Math.round(finalMins)} minut)</small>`;
         }
 
-        // Dynamiczna zmiana pola B dla operacji (* i /)
         document.getElementById('mathOp').addEventListener('change', (e) => {
             const op = e.target.value;
             const inputB = document.getElementById('mathTimeB');
