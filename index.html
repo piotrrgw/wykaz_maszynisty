@@ -43,10 +43,9 @@
                 </button>
                 <h2 id="modalTitle" style="margin-top: 0;">Instrukcja</h2>
                 <ul class="instruction-list">
-                    <li><strong>Wpisz godziny:</strong> Użyj przycisku "Teraz" lub dodaj czas skrótami np. "+1h", "+15m".</li>
+                    <li><strong>Wpisz godziny:</strong> Użyj przycisku "Teraz" lub dodaj czas skrótami.</li>
                     <li><strong>Łamanie doby:</strong> Aplikacja wykrywa, gdy praca przechodzi przez północ (np. 22:00 - 06:00) i poprawnie zlicza minuty.</li>
                     <li><strong>Uniwersalny Kalkulator:</strong> Moduł pozwalający dodawać, odejmować (z wykrywaniem doby), a także mnożyć i dzielić czas przez zwykłe liczby.</li>
-                    <li><strong>Historia:</strong> Trasy zapisują się w pamięci lokalnej co 5 sekund od ostatniej zmiany. Można je wyczyścić jednym przyciskiem.</li>
                 </ul>
             </div>
         </div>
@@ -59,45 +58,55 @@
             <div class="form-group">
                 <label for="startTime">Godzina rozpoczęcia:</label>
                 <div class="input-group">
-                    <input type="time" id="startTime" class="input-trigger">
+                    <input type="time" id="startTime" class="input-trigger" aria-label="Godzina rozpoczęcia">
                     <button type="button" class="btn-now" data-target="startTime">
                         <span class="material-symbols-outlined" style="margin-right: 4px; font-size: 20px;">schedule</span> Teraz
                     </button>
                 </div>
                 <div class="quick-time-btns">
-                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -60)">-1h</button>
-                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -15)">-15m</button>
-                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 15)">+15m</button>
-                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 60)">+1h</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -60)" aria-label="Odejmij 1 godzinę">-1h</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -15)" aria-label="Odejmij 15 minut">-15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', -1)" aria-label="Odejmij 1 minutę">-1m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 1)" aria-label="Dodaj 1 minutę">+1m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 15)" aria-label="Dodaj 15 minut">+15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('startTime', 60)" aria-label="Dodaj 1 godzinę">+1h</button>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="endTime">Godzina zakończenia:</label>
                 <div class="input-group">
-                    <input type="time" id="endTime" class="input-trigger">
+                    <input type="time" id="endTime" class="input-trigger" aria-label="Godzina zakończenia">
                     <button type="button" class="btn-now" data-target="endTime">
                         <span class="material-symbols-outlined" style="margin-right: 4px; font-size: 20px;">schedule</span> Teraz
                     </button>
                 </div>
                 <div class="quick-time-btns">
-                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -60)">-1h</button>
-                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -15)">-15m</button>
-                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 15)">+15m</button>
-                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 60)">+1h</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -60)" aria-label="Odejmij 1 godzinę">-1h</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -15)" aria-label="Odejmij 15 minut">-15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', -1)" aria-label="Odejmij 1 minutę">-1m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 1)" aria-label="Dodaj 1 minutę">+1m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 15)" aria-label="Dodaj 15 minut">+15m</button>
+                    <button type="button" class="btn-qt" onclick="adjustTime('endTime', 60)" aria-label="Dodaj 1 godzinę">+1h</button>
                 </div>
             </div>
 
             <div class="form-group">
                 <label for="restTime">Czas postoju (minuty):</label>
-                <div class="rest-control">
-                    <button class="btn-adjust" id="btnMinus" aria-label="Mniej" disabled>
-                        <span class="material-symbols-outlined">remove</span>
-                    </button>
-                    <input type="number" id="restTime" value="0" min="0" class="input-trigger">
-                    <button class="btn-adjust" id="btnPlus" aria-label="Więcej">
-                        <span class="material-symbols-outlined">add</span>
-                    </button>
+                <div class="rest-control-group">
+                    <div class="rest-btns">
+                        <button class="btn-adjust" type="button" onclick="adjustRest(-30)" aria-label="Odejmij 30 minut">-30m</button>
+                        <button class="btn-adjust" type="button" onclick="adjustRest(-10)" aria-label="Odejmij 10 minut">-10m</button>
+                        <button class="btn-adjust" type="button" onclick="adjustRest(-5)" aria-label="Odejmij 5 minut">-5m</button>
+                        <button class="btn-adjust" type="button" onclick="adjustRest(-1)" aria-label="Odejmij 1 minutę">-1m</button>
+                    </div>
+                    <input type="number" id="restTime" value="0" min="0" class="input-trigger" aria-label="Minuty postoju">
+                    <div class="rest-btns">
+                        <button class="btn-adjust" type="button" onclick="adjustRest(1)" aria-label="Dodaj 1 minutę">+1m</button>
+                        <button class="btn-adjust" type="button" onclick="adjustRest(5)" aria-label="Dodaj 5 minut">+5m</button>
+                        <button class="btn-adjust" type="button" onclick="adjustRest(10)" aria-label="Dodaj 10 minut">+10m</button>
+                        <button class="btn-adjust" type="button" onclick="adjustRest(30)" aria-label="Dodaj 30 minut">+30m</button>
+                    </div>
                 </div>
             </div>
 
@@ -113,14 +122,14 @@
             </div>
             <div class="form-group">
                 <div class="math-calc-row">
-                    <input type="time" id="mathTimeA" class="math-trigger" placeholder="Czas A">
-                    <select id="mathOp" class="math-trigger">
+                    <input type="time" id="mathTimeA" class="math-trigger" placeholder="Czas A" aria-label="Pierwszy czas do kalkulatora uniwersalnego">
+                    <select id="mathOp" class="math-trigger" aria-label="Wybierz działanie matematyczne">
                         <option value="-">Minus (-)</option>
                         <option value="+">Plus (+)</option>
                         <option value="*">Razy (×)</option>
                         <option value="/">Przez (÷)</option>
                     </select>
-                    <input type="time" id="mathTimeB" class="math-trigger" placeholder="Czas B">
+                    <input type="time" id="mathTimeB" class="math-trigger" placeholder="Czas B" aria-label="Drugi parametr do kalkulatora uniwersalnego">
                 </div>
             </div>
             <div class="result-box" style="margin-top: 1rem; padding: 1rem;" role="status" aria-live="polite">
@@ -128,20 +137,10 @@
                 <div class="result-value" id="mathResultValue" style="font-size: 2.2rem;">--:--</div>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-header">
-                <h3>Historia tras</h3>
-                <button class="btn-clear" id="btnClearHistory">
-                    <span class="material-symbols-outlined" style="font-size: 20px;">delete</span> Wyczyść
-                </button>
-            </div>
-            <ul class="history-list" id="historyList"></ul>
-        </div>
     </main>
 
     <footer>
-        <p>Wersja aplikacji: v2.1</p>
+        <p>Wersja aplikacji: v2.2</p>
         <p>Współautorzy: Gemini, Piotr M 🚂, Thundo</p>
     </footer>
 
@@ -158,13 +157,8 @@
         const endTimeInput = document.getElementById('endTime');
         const restTimeInput = document.getElementById('restTime');
         const resultValue = document.getElementById('result-value');
-        const historyList = document.getElementById('historyList');
-        const btnMinus = document.getElementById('btnMinus');
-        const btnPlus = document.getElementById('btnPlus');
         
-        let debounceTimer;
         const LS_KEY_INPUTS = 'maszynista_inputs';
-        const LS_KEY_HISTORY = 'maszynista_history';
         const LS_KEY_THEME = 'maszynista_theme';
         const LS_KEY_FONT = 'maszynista_font';
 
@@ -173,8 +167,7 @@
             loadPreferences();
             loadFromLocalStorage();
             calculate();
-            calculateMath(); // Inicjalizacja nowego kalkulatora
-            renderHistory();
+            calculateMath();
         });
 
         // --- PREFERENCJE I WYGLĄD ---
@@ -236,7 +229,14 @@
             
             input.value = `${newH}:${newM}`;
             calculate();
-            triggerHistorySave();
+        }
+
+        window.adjustRest = function(minutesToAdd) {
+            let current = parseInt(restTimeInput.value);
+            if(isNaN(current)) current = 0;
+            let newVal = Math.max(0, current + minutesToAdd); // Zapobiega wartościom ujemnym
+            restTimeInput.value = newVal;
+            calculate();
         }
 
         // --- PRZYCISK "TERAZ" ---
@@ -246,7 +246,6 @@
                 const now = new Date();
                 document.getElementById(targetId).value = now.toLocaleTimeString('pl-PL', { hour: '2-digit', minute: '2-digit' });
                 calculate();
-                triggerHistorySave();
             });
         });
 
@@ -255,15 +254,16 @@
             const start = startTimeInput.value;
             const end = endTimeInput.value;
             let rest = parseInt(restTimeInput.value);
-            if (isNaN(rest) || rest < 0) rest = 0;
-            
-            btnMinus.disabled = (rest <= 0);
-            if (rest < 0) restTimeInput.value = 0;
+            if (isNaN(rest) || rest < 0) {
+                rest = 0;
+                restTimeInput.value = 0;
+            }
 
             saveInputsToLocalStorage();
 
             if (!start || !end) {
-                resultValue.innerText = "0 min"; return null;
+                resultValue.innerText = "0 min"; 
+                return;
             }
 
             const startMins = timeToMinutes(start);
@@ -276,13 +276,9 @@
             if (duration < 0) duration = 0;
             
             resultValue.innerText = `${duration} min`;
-            return {
-                start, end, rest, result: `${duration} min`,
-                timestamp: new Date().toLocaleDateString('pl-PL') + ' ' + new Date().toLocaleTimeString('pl-PL', {hour: '2-digit', minute:'2-digit'})
-            };
         }
 
-        // --- KALKULATOR MATEMATYCZNY (NOWOŚĆ) ---
+        // --- KALKULATOR MATEMATYCZNY ---
         function calculateMath() {
             const mathTimeA = document.getElementById('mathTimeA').value;
             const mathOp = document.getElementById('mathOp').value;
@@ -300,7 +296,7 @@
                 const minsB = timeToMinutes(mathInputB.value);
                 finalMins = (mathOp === '+') ? (minsA + minsB) : (minsA - minsB);
                 
-                // Obsługa łamania doby w odejmowaniu / dodawaniu
+                // Obsługa łamania doby
                 finalMins = (finalMins % 1440 + 1440) % 1440; 
             } else {
                 // Mnożenie lub dzielenie
@@ -315,7 +311,6 @@
                 }
             }
 
-            // Omijanie błędów zaokrągleń
             const absMins = Math.round(Math.abs(finalMins));
             const sign = (finalMins < 0 && mathOp !== '+' && mathOp !== '-') ? "-" : "";
             const resH = Math.floor(absMins / 60).toString().padStart(2, '0');
@@ -340,69 +335,7 @@
             input.addEventListener('input', calculateMath);
         });
 
-
-        // --- HISTORIA I ZAPIS ---
-        function triggerHistorySave() {
-            clearTimeout(debounceTimer);
-            debounceTimer = setTimeout(() => {
-                const data = calculate();
-                if (data) addToHistory(data);
-            }, 5000); // Zapis co 5 sekund bezruchu
-        }
-
-        function addToHistory(data) {
-            let history = getHistoryFromStorage();
-            history.unshift(data);
-            localStorage.setItem(LS_KEY_HISTORY, JSON.stringify(history));
-            renderHistory();
-        }
-
-        function renderHistory() {
-            const history = getHistoryFromStorage();
-            historyList.innerHTML = '';
-            
-            if (history.length === 0) {
-                historyList.innerHTML = '<li style="padding:15px; text-align:center; color:var(--text-secondary);">Brak zapisanych tras</li>';
-                return;
-            }
-
-            history.forEach((item) => {
-                const li = document.createElement('li');
-                li.className = 'history-item';
-                li.setAttribute('tabindex', '0');
-                li.setAttribute('role', 'button');
-                li.innerHTML = `
-                    <div class="history-content">
-                        <div>
-                            <div class="history-route">${item.start} - ${item.end}</div>
-                            <div class="history-meta">Postój: ${item.rest} min | ${item.timestamp}</div>
-                        </div>
-                        <div class="history-result">${item.result}</div>
-                    </div>
-                `;
-                li.addEventListener('click', () => {
-                    startTimeInput.value = item.start;
-                    endTimeInput.value = item.end;
-                    restTimeInput.value = item.rest;
-                    calculate();
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                });
-                historyList.appendChild(li);
-            });
-        }
-
-        document.getElementById('btnClearHistory').addEventListener('click', () => {
-            if (getHistoryFromStorage().length === 0) { alert("Historia jest już pusta."); return; }
-            if (confirm("Czy na pewno chcesz usunąć całą historię kalkulatora?")) {
-                localStorage.removeItem(LS_KEY_HISTORY);
-                renderHistory();
-            }
-        });
-
-        function getHistoryFromStorage() {
-            const stored = localStorage.getItem(LS_KEY_HISTORY); return stored ? JSON.parse(stored) : [];
-        }
-
+        // --- PAMIĘĆ ---
         function saveInputsToLocalStorage() {
             localStorage.setItem(LS_KEY_INPUTS, JSON.stringify({ start: startTimeInput.value, end: endTimeInput.value, rest: restTimeInput.value }));
         }
@@ -420,10 +353,8 @@
         }
 
         document.querySelectorAll('.input-trigger').forEach(input => {
-            input.addEventListener('input', () => { calculate(); triggerHistorySave(); });
+            input.addEventListener('input', calculate);
         });
-        btnPlus.addEventListener('click', () => { restTimeInput.value = (parseInt(restTimeInput.value)||0) + 1; calculate(); triggerHistorySave(); });
-        btnMinus.addEventListener('click', () => { let v=(parseInt(restTimeInput.value)||0); if(v>0) { restTimeInput.value=v-1; calculate(); triggerHistorySave(); } });
 
     </script>
 </body>

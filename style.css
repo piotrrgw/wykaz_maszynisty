@@ -102,7 +102,7 @@ main { flex: 1; padding: 1.5rem 1rem; max-width: 600px; margin: 0 auto; width: 1
     display: flex; justify-content: space-between; align-items: center;
     margin-bottom: 1.2rem; border-bottom: 2px solid var(--input-border); padding-bottom: 1rem;
 }
-.card-header h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text-muted);}
+.card-header h3 { margin: 0; font-size: 1.25rem; font-weight: 700; color: var(--text-color);}
 
 .form-group { margin-bottom: 1.5rem; }
 label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: var(--text-color); font-size: 1.05rem; }
@@ -114,6 +114,7 @@ input[type="time"], input[type="number"], select {
     border-radius: 8px; font-size: 1.2rem; background-color: var(--input-bg);
     color: var(--text-color); color-scheme: light dark; 
     min-height: 44px; font-weight: 500; transition: border-color 0.2s;
+    width: 100%;
 }
 input:focus-visible, button:focus-visible, select:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; border-color: var(--accent-color); }
 
@@ -125,25 +126,50 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 3px s
 }
 .btn-now:hover { background-color: var(--input-border); }
 
-/* PRZYCISKI SZYBKIEGO WPROWADZANIA */
-.quick-time-btns { display: flex; gap: 0.5rem; margin-top: 0.5rem; }
+/* PRZYCISKI SZYBKIEGO WPROWADZANIA (GRID) */
+.quick-time-btns { 
+    display: grid; 
+    grid-template-columns: repeat(3, 1fr); 
+    gap: 0.5rem; 
+    margin-top: 0.75rem; 
+}
+@media (min-width: 480px) {
+    .quick-time-btns {
+        grid-template-columns: repeat(6, 1fr);
+    }
+}
+
 .btn-qt {
-    flex: 1; min-height: 44px; border-radius: 8px; border: 1px solid var(--input-border);
+    min-height: 44px; border-radius: 8px; border: 1px solid var(--input-border);
     background: var(--btn-gray-bg); color: var(--text-color); font-weight: 600; cursor: pointer;
-    transition: all 0.2s; font-size: 0.95rem;
+    transition: all 0.2s; font-size: 0.95rem; width: 100%;
 }
 .btn-qt:hover { background: var(--input-border); color: var(--accent-color); }
 
-/* POSTÓJ KONTROLKI */
-.rest-control { display: flex; gap: 8px; align-items: stretch; }
-.rest-control input { text-align: center; font-weight: bold; flex: 1; width: auto; font-size: 1.3rem;}
-.btn-adjust {
-    background-color: var(--btn-gray-bg); color: var(--text-color); border: 2px solid var(--input-border);
-    width: 48px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
-    flex-shrink: 0; min-height: 44px; transition: background-color 0.2s;
+/* POSTÓJ KONTROLKI (GRID) */
+.rest-control-group { 
+    display: flex; 
+    flex-direction: column; 
+    gap: 0.75rem; 
 }
-.btn-adjust:hover:not(:disabled) { background-color: var(--input-border); }
-.btn-adjust:disabled { opacity: 0.5; cursor: not-allowed; }
+.rest-btns {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0.5rem;
+}
+.rest-control-group input { 
+    text-align: center; 
+    font-weight: bold; 
+    font-size: 1.4rem;
+}
+.btn-adjust {
+    background-color: var(--btn-gray-bg); color: var(--text-color); border: 1px solid var(--input-border);
+    border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;
+    min-height: 44px; font-weight: 600; font-size: 0.95rem; transition: background-color 0.2s;
+    width: 100%;
+}
+.btn-adjust:hover { background-color: var(--input-border); color: var(--accent-color); }
+
 
 /* KALKULATOR CZASOWY UNIWERSALNY */
 .math-calc-row {
@@ -163,25 +189,6 @@ input:focus-visible, button:focus-visible, select:focus-visible { outline: 3px s
 .result-label { font-size: 1rem; color: var(--result-text); margin-bottom: 0.5rem; font-weight: 600; opacity: 0.9; text-transform: uppercase; letter-spacing: 1px;}
 .result-value { font-size: 2.8rem; font-weight: 800; color: var(--result-text); line-height: 1.1; }
 
-/* HISTORIA */
-.btn-clear {
-    background: transparent; border: 2px solid var(--danger-color); color: var(--danger-color);
-    padding: 0.5rem 1rem; border-radius: 8px; font-weight: 600; cursor: pointer;
-    font-size: 0.9rem; min-height: 44px; display: flex; align-items: center; gap: 6px; transition: all 0.2s;
-}
-.btn-clear:hover { background-color: rgba(220, 53, 69, 0.1); }
-.btn-clear:active { background-color: var(--danger-color); color: white; }
-
-.history-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.75rem;}
-.history-item {
-    background: var(--bg-color); border: 1px solid var(--input-border);
-    padding: 1rem; border-radius: 10px; cursor: pointer; transition: transform 0.2s, box-shadow 0.2s;
-}
-.history-item:hover { transform: translateY(-2px); box-shadow: 0 4px 6px var(--shadow-color); border-color: var(--accent-color);}
-.history-content { display: flex; justify-content: space-between; align-items: center; }
-.history-route { font-weight: 700; font-size: 1.1rem; color: var(--text-color); margin-bottom: 4px;}
-.history-meta { font-size: 0.85rem; color: var(--text-secondary); }
-.history-result { font-weight: 800; color: var(--accent-color); font-size: 1.2rem;}
 
 /* MODAL INSTRUKCJA */
 .modal-overlay {
